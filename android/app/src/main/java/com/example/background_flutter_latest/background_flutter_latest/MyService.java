@@ -6,14 +6,27 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-public class MyService extends Service {
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
+public class MyService extends Service {
+    private String lats,longs;
+private RequestQueue mRequestQueue;
+private StringRequest mStringRequest;
+LocationManager locationManager;
+private String url = "https://api.weatherbit.io/v2.0/current?lat="+lats+"&lon="+longs+"&key=ac09fe29ca4b4e82875275042501e5d7";
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         createNotificationChannel();
@@ -24,9 +37,32 @@ public class MyService extends Service {
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pendingIntent).build();
         startForeground(1,notification);
+        apiCall();
         return START_STICKY;
     }
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
+    private void apiCall(){
+        mRequestQueue = Volley.newRequestQueue(this);
+        mStringRequest = new StringRequest(Request.Method.GET,url,new Response.Listener<String>(){
+
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(MyService.this, "Response:"+response.toString(), Toast.LENGTH_SHORT).show();
+            }
+        },new Response.ErrorListener(){
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        mRequestQueue.add(mStringRequest);
+}
     private void createNotificationChannel() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
