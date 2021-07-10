@@ -97,7 +97,7 @@ private TimerTask timerTask;
                         String uvvalue = tutorialsObject.getString("uv").substring(0,1);
                         //Toast.makeText(MyService.this, "uvvalue:"+uvvalue, Toast.LENGTH_SHORT).show();
                         int uvindex = Integer.parseInt(uvvalue);
-                        if(uvindex == 0){
+                        if(uvindex >= 3 && uvindex<=5){
                             buildNotification();
                         }
                         //creating a tutorial object and giving them the values from json object
