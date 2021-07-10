@@ -2,12 +2,16 @@ import 'package:background_flutter_latest/screens/FoodData.dart';
 import 'package:background_flutter_latest/screens/asksymptoms.dart';
 import 'package:background_flutter_latest/screens/bluetooth.dart';
 import 'package:background_flutter_latest/screens/profile1.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'bottom_nav_screen.dart';
 import 'recommendations.dart';
 
 class MainDrawer extends StatelessWidget {
+  Future<void> _signOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -112,7 +116,8 @@ class MainDrawer extends StatelessWidget {
               ),
             ),
             onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Recommend()));
+             // Navigator.push(context, MaterialPageRoute(builder: (context) => Recommend()));
+              _signOut();
             },
           ),
         ],

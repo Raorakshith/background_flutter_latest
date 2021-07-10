@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ffi';
 import 'package:background_flutter_latest/screens/profile2.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -18,6 +19,7 @@ class Profile1 extends StatefulWidget {
 
 class _Profile1State extends State<Profile1> {
   final referenceDatabase = FirebaseDatabase.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
   Position _position;
   StreamSubscription<Position> _subscription;
   Address _address;
