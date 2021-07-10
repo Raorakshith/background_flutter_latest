@@ -1,3 +1,5 @@
+import 'package:background_flutter_latest/screens/recommenditems.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -9,6 +11,29 @@ class Recommend extends StatefulWidget {
 }
 
 class _RecommendState extends State<Recommend> {
+  List<RecommendItems> postsList = [];
+  final reference = FirebaseDatabase.instance.reference().child("Food Recommendations").child("Low");
+
+  @override
+  void initState() {
+    super.initState();
+    reference.once().then((DataSnapshot snap)
+    {
+      var Keys = snap.value.keys;
+      var Data = snap.value;
+      //postsList.clear();
+      for(var individualkey in Keys)
+      {
+        RecommendItems posts = new RecommendItems(
+          Data[individualkey]['code'],
+          Data[individualkey]['item'],
+          Data[individualkey]['vitd'],
+          Data[individualkey]['foodimage'],
+        );
+        postsList.add(posts);
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,13 +105,19 @@ class _RecommendState extends State<Recommend> {
                   padding: EdgeInsets.only(top: 45.0),
                   child: Container(
                     height: MediaQuery.of(context).size.height-300,
-                    child: ListView(
-                      children: [
-                        _dietFoodItem('assets/skintones/alternativemedicine.jpg', 'food 1', '10 mcg'),
-                        _dietFoodItem('assets/skintones/cardiology.jpg', 'food 2', '10 mcg'),
-                        _dietFoodItem('assets/skintones/pediatrics.jpg', 'food 3', '10 mcg')
-                      ]
-                    )
+                    child: ListView.builder(
+                        itemCount: postsList.length,
+                        itemBuilder: (_, index){
+                          return _dietFoodItem(postsList[index].item,postsList[index].vitd,postsList[index].foodimage);
+                        }
+                    ),
+                    // child: ListView(
+                    //   children: [
+                    //     _dietFoodItem('assets/skintones/alternativemedicine.jpg', 'food 1', '10 mcg'),
+                    //     _dietFoodItem('assets/skintones/cardiology.jpg', 'food 2', '10 mcg'),
+                    //     _dietFoodItem('assets/skintones/pediatrics.jpg', 'food 3', '10 mcg')
+                    //   ]
+                    // )
                   )
                 )
               ],
@@ -96,7 +127,7 @@ class _RecommendState extends State<Recommend> {
       )
     );
   }
-  Widget _dietFoodItem(String imgpath, String foodName, String vitamind){
+  Widget _dietFoodItem(String foodName, String vitamind,String imgpath){
     return Padding(
       padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
       child: InkWell(
