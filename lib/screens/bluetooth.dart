@@ -24,9 +24,11 @@ String _messageBuffer = '';
 BluetoothDevice _device;
 bool isDisconnecting = false;
 bool _connected = false;
+String textHolder = '0';
 bool _isButtonUnavailable = false;
 var voltage ="";
 List<BluetoothDevice> _devicesList = [];
+List<double> bluetoothrecieveddata = [];
 @override
   void dispose() {
     // TODO: implement dispose
@@ -167,6 +169,19 @@ void _sendOffMessageToBluetooth() async{
   });
 
 }
+void _computeData(){
+  double temp = 0;
+  for(int i=0;i<4;i++){
+    temp = bluetoothrecieveddata.elementAt(0);
+    if(bluetoothrecieveddata.elementAt(i+1) >= temp){
+      temp = bluetoothrecieveddata.elementAt(i+1);
+    }
+  }
+  setState(() {
+    textHolder = temp.toString();
+  });
+
+}
 void _recieveMessageFromBluetooth() {
   //connection.input.listen((event) {print(event.toString());})
   var data = connection.input.first.toString();
@@ -213,6 +228,7 @@ void _onDataReceived(Uint8List data) {
       received_data = received_data.trim();
         print(received_data);
         show(received_data);
+        bluetoothrecieveddata.add(double.parse(received_data.replaceAll("V", "")));
         voltage = received_data;
 //        print(received_data.substring(0, 4));
       // print(received_data.length);
@@ -338,6 +354,30 @@ void _disconnect() async{
                   onPressed: _connected ? _sendOffMessageToBluetooth:null,child: Text("OFF"),
                 ),
               ],
+            ),
+            Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: new Row(
+                  children: [
+                    Text('$textHolder',
+                      style: TextStyle(fontSize: 20),),
+                    Spacer(),
+                    Container(
+                      height: 50.0,
+                      width: 50.0,
+                      child: FittedBox(
+                        child: FloatingActionButton(
+                          heroTag: 'btn1',
+                          child: Icon(Icons.autorenew),
+                          onPressed:(){
+                            _computeData();
+                          },
+                        ),
+                      ),
+
+                    ),
+                  ],
+                )
             ),
             Padding(
               padding: const EdgeInsets.all(20.0),
