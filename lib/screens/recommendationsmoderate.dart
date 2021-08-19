@@ -27,7 +27,7 @@ class _RecommendState extends State<RecommendModerate> {
         RecommendItems posts = new RecommendItems(
           Data[individualkey]['code'],
           Data[individualkey]['item'],
-          Data[individualkey]['vitd'],
+          Data[individualkey]['vitd3'],
           Data[individualkey]['foodimage'],
         );
         postsList.add(posts);
@@ -108,7 +108,7 @@ class _RecommendState extends State<RecommendModerate> {
                     child: ListView.builder(
                         itemCount: postsList.length,
                         itemBuilder: (_, index){
-                          return _dietFoodItem(postsList[index].item,postsList[index].vitd,postsList[index].foodimage);
+                          return _dietFoodItem(postsList[index].item,postsList[index].vitd3,postsList[index].foodimage);
                         }
                     ),
                     // child: ListView(
@@ -142,12 +142,7 @@ class _RecommendState extends State<RecommendModerate> {
                 children: [
                   Hero(
                     tag: imgpath,
-                    child: Image(
-                      image: AssetImage(imgpath),
-                      fit: BoxFit.cover,
-                      height: 75.0,
-                      width: 75.0
-                    )
+                      child: Image.network(imgpath,fit: BoxFit.cover,height: 75.0,width: 75.0)
                   ),
                   SizedBox(width: 10.0),
                   Column(

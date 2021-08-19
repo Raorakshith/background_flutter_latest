@@ -12,7 +12,7 @@ class Recommend extends StatefulWidget {
 
 class _RecommendState extends State<Recommend> {
   List<RecommendItems> postsList = [];
-  final reference = FirebaseDatabase.instance.reference().child("Food Recommendations").child("Low");
+  final reference = FirebaseDatabase.instance.reference().child("Food Recommendations").child("Moderate");
 
   @override
   void initState() {
@@ -27,11 +27,14 @@ class _RecommendState extends State<Recommend> {
         RecommendItems posts = new RecommendItems(
           Data[individualkey]['code'],
           Data[individualkey]['item'],
-          Data[individualkey]['vitd'],
+          Data[individualkey]['vitd3'],
           Data[individualkey]['foodimage'],
         );
         postsList.add(posts);
       }
+      setState(() {
+        print('Length: $postsList.length');
+      });
     });
   }
   @override
@@ -108,7 +111,7 @@ class _RecommendState extends State<Recommend> {
                     child: ListView.builder(
                         itemCount: postsList.length,
                         itemBuilder: (_, index){
-                          return _dietFoodItem(postsList[index].item,postsList[index].vitd,postsList[index].foodimage);
+                          return _dietFoodItem(postsList[index].item,postsList[index].vitd3,postsList[index].foodimage);
                         }
                     ),
                     // child: ListView(
@@ -142,12 +145,7 @@ class _RecommendState extends State<Recommend> {
                 children: [
                   Hero(
                     tag: imgpath,
-                    child: Image(
-                      image: AssetImage(imgpath),
-                      fit: BoxFit.cover,
-                      height: 75.0,
-                      width: 75.0
-                    )
+                    child: Image.network(imgpath,fit: BoxFit.cover,height: 75.0,width: 75.0)
                   ),
                   SizedBox(width: 10.0),
                   Column(
@@ -174,3 +172,9 @@ class _RecommendState extends State<Recommend> {
     );
   }
 }
+// child: Image(
+// image: AssetImage(imgpath),
+// fit: BoxFit.cover,
+// height: 75.0,
+// width: 75.0
+// )

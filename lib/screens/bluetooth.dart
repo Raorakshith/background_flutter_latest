@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
@@ -28,7 +30,9 @@ String textHolder = '0';
 bool _isButtonUnavailable = false;
 var voltage ="";
 List<BluetoothDevice> _devicesList = [];
-List<double> bluetoothrecieveddata = [];
+List<String> bluetoothrecieveddata = [];
+final reference = FirebaseDatabase.instance.reference().child("Vitamin D values");
+
 @override
   void dispose() {
     // TODO: implement dispose
@@ -170,13 +174,17 @@ void _sendOffMessageToBluetooth() async{
 
 }
 void _computeData(){
+  List<double> bluetoothrecieveddatalist1 = [];
   double temp = 0;
-  for(int i=0;i<4;i++){
-    temp = bluetoothrecieveddata.elementAt(0);
-    if(bluetoothrecieveddata.elementAt(i+1) >= temp){
-      temp = bluetoothrecieveddata.elementAt(i+1);
-    }
+  for(int i=0;i<9;i++){
+    bluetoothrecieveddatalist1.add(double.parse(bluetoothrecieveddata.elementAt(i)));
+    // temp = double.parse(bluetoothrecieveddata.elementAt(0));
+    // if(double.parse(bluetoothrecieveddata.elementAt(i+1)) >= temp){
+    //   temp = double.parse(bluetoothrecieveddata.elementAt(i+1));
+    // }
   }
+  //temp = bluetoothrecieveddatalist1.isEmpty ? 0 : bluetoothrecieveddatalist1.reduce(max);
+  temp = bluetoothrecieveddatalist1.fold(bluetoothrecieveddatalist1[0],max);
   setState(() {
     textHolder = temp.toString();
   });
@@ -227,8 +235,9 @@ void _onDataReceived(Uint8List data) {
       String received_data = _messageBuffer + dataString.substring(0, index);
       received_data = received_data.trim();
         print(received_data);
-        show(received_data);
-        bluetoothrecieveddata.add(double.parse(received_data.replaceAll("V", "")));
+        reference.push().set(received_data);
+        // show(received_data);
+        bluetoothrecieveddata.add(received_data);
         voltage = received_data;
 //        print(received_data.substring(0, 4));
       // print(received_data.length);
@@ -390,9 +399,21 @@ void _disconnect() async{
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('$voltage',),
+            Container(
+                      height: 150,
+                      child: ListView.builder(
+                          itemCount: bluetoothrecieveddata.length,
+                          itemBuilder: (_, index){
+                            return Text(bluetoothrecieveddata[index]);
+                          }
+                      ),
+                      // child: ListView(
+                      //   children: [
+                      //     _dietFoodItem('assets/skintones/alternativemedicine.jpg', 'food 1', '10 mcg'),
+                      //     _dietFoodItem('assets/skintones/cardiology.jpg', 'food 2', '10 mcg'),
+                      //     _dietFoodItem('assets/skintones/pediatrics.jpg', 'food 3', '10 mcg')
+                      //   ]
+                      // )
             ),
           ],
         ),
@@ -400,5 +421,26 @@ void _disconnect() async{
 
     );
   }
+Widget _bluetoothItem(String bluetoothdata){
+  return Padding(
+      padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
+      child: InkWell(
+        onTap: (){
 
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Container(
+                child: Text(bluetoothdata,
+                                style: TextStyle(
+                                    fontSize: 15.0,
+                                    color: Colors.grey
+                                )),
+                      )
+                    ]
+                )
+      )
+  );
+}
 }
