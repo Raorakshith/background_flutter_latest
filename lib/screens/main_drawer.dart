@@ -3,17 +3,24 @@ import 'package:background_flutter_latest/screens/asksymptoms.dart';
 import 'package:background_flutter_latest/screens/bluetooth.dart';
 import 'package:background_flutter_latest/screens/profile1.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import 'bottom_nav_screen.dart';
 import 'recommendations.dart';
 
 class MainDrawer extends StatelessWidget {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final referenceDatabase = FirebaseDatabase.instance.reference().child("User Data").child(FirebaseAuth.instance.currentUser.uid).child("Profile");
+String imageUrl, username, userdata;
   Future<void> _signOut() async {
     await FirebaseAuth.instance.signOut();
   }
   @override
   Widget build(BuildContext context) {
+    referenceDatabase.child("username").once().then((DataSnapshot data){
+      username = data.value;
+    });
     return Drawer(
       child: Column(
         children: <Widget>[
@@ -34,7 +41,7 @@ class MainDrawer extends StatelessWidget {
                       fit: BoxFit.fill),
                     ),
                   ),
-                  Text('UserName',style: TextStyle(
+                  Text('$username',style: TextStyle(
                     fontSize: 22,
                     color: Colors.white,
                   ),

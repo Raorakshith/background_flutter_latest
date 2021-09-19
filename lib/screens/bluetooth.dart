@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
@@ -7,6 +8,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:flutter_gauge/flutter_gauge.dart';
 
 import 'main_drawer.dart';
 
@@ -177,7 +179,7 @@ void _computeData(){
   List<double> bluetoothrecieveddatalist1 = [];
   double temp = 0;
   for(int i=0;i<9;i++){
-    bluetoothrecieveddatalist1.add(double.parse(bluetoothrecieveddata.elementAt(i)));
+    bluetoothrecieveddatalist1.add(double.parse(bluetoothrecieveddata[i]));
     // temp = double.parse(bluetoothrecieveddata.elementAt(0));
     // if(double.parse(bluetoothrecieveddata.elementAt(i+1)) >= temp){
     //   temp = double.parse(bluetoothrecieveddata.elementAt(i+1));
@@ -398,6 +400,18 @@ void _disconnect() async{
                   fontWeight: FontWeight.bold,
                 ),
               ),
+            ),
+            FlutterGauge(
+                handSize: 25,
+                index:double.parse('$textHolder'),
+                end: 10,
+                number: Number.endAndCenterAndStart,
+                circleColor: Color(0xFF47505F),
+                secondsMarker:
+                SecondsMarker.secondsAndMinute,
+                counterStyle: TextStyle(
+                  color: Colors.black,fontSize: 20,
+                )
             ),
             Container(
                       height: 150,

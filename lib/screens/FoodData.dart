@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:background_flutter_latest/screens/Posts1.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,8 @@ class FoodData extends StatefulWidget {
 }
 
 class _FoodDataState extends State<FoodData> {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  User user;
   var screenWidth;
   List<Posts1> foodlist = [];
   List<Posts1> selectedfoodlist = [];
@@ -21,6 +24,7 @@ class _FoodDataState extends State<FoodData> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    user = auth.currentUser;
     final referenceDatabase = FirebaseDatabase.instance;
     final ref = referenceDatabase.reference().child("Food List");
     ref.once().then((DataSnapshot snap) {
@@ -131,7 +135,7 @@ class _FoodDataState extends State<FoodData> {
          final quantity = selectedfoodlist.elementAt(i).quantity;
          final referenceDatabase2 = FirebaseDatabase.instance;
          final ref2 = referenceDatabase2.reference().child("Food List").child(foodcode);
-         final ref3 = referenceDatabase2.reference().child("User Data").child("Food Datas").child(foodcode);
+         final ref3 = referenceDatabase2.reference().child("User Data").child(user.uid).child("Food Datas").child(foodcode);
          ref3.set({'code':foodcode,'item':item,'vitd':vitd,'quantity':quantity}).whenComplete(() async{
            await Fluttertoast.showToast(msg: foodcode,toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM ,backgroundColor: Colors.grey,textColor: Colors.white);
            //Navigator.push(context, MaterialPageRoute(builder: (context) => Profile2()));

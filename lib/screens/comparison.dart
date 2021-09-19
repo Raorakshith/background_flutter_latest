@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ffi';
 import 'package:background_flutter_latest/screens/FoodData.dart';
 import 'package:background_flutter_latest/screens/Posts1.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -20,12 +21,13 @@ class Compare extends StatefulWidget {
 }
 
 class _CompareState extends State<Compare> {
+  final FirebaseAuth auth = FirebaseAuth.instance;
   double count = 0;
   List<Posts1> postsList = [];
   final exposuretime = TextEditingController();
   final exposureduration = TextEditingController();
-  final reference = FirebaseDatabase.instance.reference().child("User Data").child("Food Datas");
-  final referenceDatabase = FirebaseDatabase.instance.reference().child("User Data").child("Profile");
+  final reference = FirebaseDatabase.instance.reference().child("User Data").child(FirebaseAuth.instance.currentUser.uid).child("Food Datas");
+  final referenceDatabase = FirebaseDatabase.instance.reference().child("User Data").child(FirebaseAuth.instance.currentUser.uid).child("Profile");
   final referenceDatabase1 = FirebaseDatabase.instance.reference().child("Sunlight Data");
   Position _position;
   StreamSubscription<Position> _subscription;

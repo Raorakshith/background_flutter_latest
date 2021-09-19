@@ -1,4 +1,5 @@
 import 'package:background_flutter_latest/screens/bottom_nav_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -12,11 +13,13 @@ class Profile2 extends StatefulWidget {
 }
 
 class _Profile2State extends State<Profile2> {
+  final FirebaseAuth auth = FirebaseAuth.instance;
   final referenceDatabase = FirebaseDatabase.instance;
   final formkey = new GlobalKey<FormState>();
   final userhealth = TextEditingController();
   String preg,child,old,kidney,liver;
   void saveToDatabase(){
+    final User user = auth.currentUser;
     final ref = referenceDatabase.reference();
     var data=
     {
@@ -27,7 +30,7 @@ class _Profile2State extends State<Profile2> {
       "kidneydisease" : kidney,
       "liverdisease" : liver,
     };
-    ref.child("User Data").child("Health Data").set(data).whenComplete(() async{
+    ref.child("User Data").child(user.uid).child("Health Data").set(data).whenComplete(() async{
       await Fluttertoast.showToast(msg: "Uploaded successfully",toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM ,backgroundColor: Colors.grey,textColor: Colors.white);
       Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavScreen()));
     });

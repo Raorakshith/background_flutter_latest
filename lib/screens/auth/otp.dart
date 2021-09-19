@@ -1,4 +1,4 @@
-import 'package:background_flutter_latest/screens/bottom_nav_screen.dart';
+import 'package:background_flutter_latest/screens/profile1.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pin_put/pin_put.dart';
@@ -40,6 +40,15 @@ class _OTPScreenState extends State<OTPScreen> {
               ),
             ),
           ),
+          Container(
+            margin: EdgeInsets.only(top: 20),
+            child: Center(
+              child: Text(
+                'Enter the OTP',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(30.0),
             child: PinPut(
@@ -62,7 +71,7 @@ class _OTPScreenState extends State<OTPScreen> {
                     if (value.user != null) {
                       Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => BottomNavScreen()),
+                          MaterialPageRoute(builder: (context) => Profile1()),
                           (route) => false);
                     }
                   });
@@ -73,7 +82,16 @@ class _OTPScreenState extends State<OTPScreen> {
                 }
               },
             ),
-          )
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 20),
+            child: Center(
+              child: Text(
+                'Didnt recieve the OTP? Resend Now',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blue),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -89,7 +107,7 @@ class _OTPScreenState extends State<OTPScreen> {
             if (value.user != null) {
               Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => BottomNavScreen()),
+                  MaterialPageRoute(builder: (context) => Profile1()),
                   (route) => false);
             }
           });

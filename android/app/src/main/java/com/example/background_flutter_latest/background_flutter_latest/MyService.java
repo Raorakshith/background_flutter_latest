@@ -1,25 +1,34 @@
 package com.example.background_flutter_latest.background_flutter_latest;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -27,6 +36,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.location.ActivityRecognitionClient;
+import com.google.android.gms.location.DetectedActivity;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,15 +52,21 @@ import java.util.TimerTask;
 import static android.content.ContentValues.TAG;
 
 public class MyService extends Service {
+    private String TAG = MyService.class.getSimpleName();
+    BroadcastReceiver broadcastReceiver;
+    BackgroundDetectedActivitiesService ab;
+    static int v = 0;
     private String lats,longs;
 private RequestQueue mRequestQueue;
 private StringRequest mStringRequest;
 LocationManager locationManager;
 private Timer timer;
 private TimerTask timerTask;
+
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
+        super.onStartCommand(intent, flags, startId);
         createNotificationChannel();
         createNotificationChannel1();
         Intent intent1 = new Intent(this,MainActivity.class);
@@ -60,8 +80,36 @@ private TimerTask timerTask;
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 
         } else {
+            ab = new BackgroundDetectedActivitiesService();
+            // services not running already
+            // start services
+            if (!isMyServiceRunning(ab.getClass())) {
+
+
+
+
+                v =0;
+                startTracking();
+
+            }
+
+            else{
+
+               // Toast.makeText(MainActivity.this,   "Service Already Running", Toast.LENGTH_LONG).show();
+
+            }
             startTimer();
         }
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(Constants.BROADCAST_DETECTED_ACTIVITY)) {
+                    int type = intent.getIntExtra("type", -1);
+                    int confidence = intent.getIntExtra("confidence", 0);
+                    handleUserActivity(type, confidence);
+                }
+            }
+        };
         //getLocation();
         return START_STICKY;
     }
@@ -191,8 +239,161 @@ private TimerTask timerTask;
                 Log.d("Running", "run: good");
                 //Toast.makeText(MyService.this, "running", Toast.LENGTH_SHORT).show();
                 getLocation();
+
             }
         };
-        timer.schedule(timerTask,5000,300000);
+        timer.schedule(timerTask,1000,300000);
     }
+
+
+
+
+    // check your background services
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                Log.i ("Service statu", "Running");
+                return true;
+            }
+        }
+        Log.i ("Service status", "Not running");
+        return false;
+    }
+
+    private void handleUserActivity(int type, int confidence) {
+        String label = getString(R.string.activity_unknown);
+       // int icon = R.drawable.ic_baseline_accessibility_24;
+
+
+        switch (type) {
+            case DetectedActivity.IN_VEHICLE: {
+                label = getString(R.string.activity_in_vehicle);
+               // icon = R.drawable.ic_baseline_drive_eta_24;
+                break;
+            }
+            case DetectedActivity.ON_BICYCLE: {
+                label = getString(R.string.activity_on_bicycle);
+                //icon = R.drawable.ic_baseline_directions_bike_24;
+                break;
+            }
+            case DetectedActivity.ON_FOOT: {
+                label = getString(R.string.activity_on_foot);
+               // icon = R.drawable.ic_baseline_directions_walk_24;
+                break;
+            }
+            case DetectedActivity.RUNNING: {
+                label = getString(R.string.activity_running);
+                //icon = R.drawable.ic_baseline_run_circle_24;
+                break;
+            }
+            case DetectedActivity.STILL: {
+                label = getString(R.string.activity_still);
+                //icon = R.drawable.ic_baseline_accessibility_24;
+
+                break;
+            }
+            case DetectedActivity.TILTING: {
+                label = getString(R.string.activity_tilting);
+               // icon = R.drawable.ic_baseline_filter_tilt_shift_24;
+                break;
+            }
+            case DetectedActivity.WALKING: {
+                label = getString(R.string.activity_walking);
+                //icon = R.drawable.ic_baseline_directions_walk_24;
+                break;
+            }
+            case DetectedActivity.UNKNOWN: {
+                label = getString(R.string.activity_unknown);
+                //icon = R.drawable.ic_baseline_device_unknown_24;
+
+                break;
+            }
+        }
+
+        Log.e(TAG, "User activity: " + label + ", Confidence: " + confidence);
+
+
+
+        if(v ==0 ){
+
+
+            v = confidence;
+//            txtActivity.setText(label);
+//            txtConfidence.setText("Confidence: " + confidence);
+//            imgActivity.setImageResource(icon);
+
+        }
+        else{
+
+
+            if(confidence > 50){
+
+                v = confidence;
+//                txtActivity.setText(label);
+//                txtConfidence.setText("Confidence: " + confidence);
+//                imgActivity.setImageResource(icon);
+
+
+            }
+
+            else if (v <= confidence) {
+
+//                txtActivity.setText(label);
+//                txtConfidence.setText("Confidence: " + confidence);
+//                imgActivity.setImageResource(icon);
+            }
+
+
+
+        }
+
+    }
+
+
+
+    // check your background services
+
+
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//
+//        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
+//                new IntentFilter(Constants.BROADCAST_DETECTED_ACTIVITY));
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//
+//        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+//    }
+
+    private void startTracking() {
+        Intent intent = new Intent(MyService.this, BackgroundDetectedActivitiesService.class);
+        startService(intent);
+    }
+
+    private void stopTracking() {
+        Intent intent = new Intent(MyService.this, BackgroundDetectedActivitiesService.class);
+        stopService(intent);
+    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//
+//        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
+//                new IntentFilter(Constants.BROADCAST_DETECTED_ACTIVITY));
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//
+//        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+//    }
+
+
 }

@@ -1,0 +1,10 @@
+<resources>
+    <string name="activity_unknown">Unknown</string>
+    <string name="activity_in_vehicle">Vehicle</string>
+    <string name="activity_on_bicycle">Bicycle</string>
+    <string name="activity_on_foot">Foot</string>
+    <string name="activity_running">Running</string>
+    <string name="activity_still">Still</string>
+    <string name="activity_tilting">Tilting</string>
+    <string name="activity_walking">Walking</string>
+</resources>

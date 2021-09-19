@@ -54,6 +54,7 @@ class _Profile1State extends State<Profile1> {
     // textHolder = bmi as String;
   }
   void saveToDatabase(){
+    final User user = auth.currentUser;
     final ref = referenceDatabase.reference();
     var data=
     {
@@ -67,7 +68,7 @@ class _Profile1State extends State<Profile1> {
       "address" : addressesdes,
       "uvindex" : temp,
     };
-    ref.child("User Data").child("Profile").set(data).whenComplete(() async{
+    ref.child("User Data").child(user.uid).child("Profile").set(data).whenComplete(() async{
       await Fluttertoast.showToast(msg: "Uploaded successfully",toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM ,backgroundColor: Colors.grey,textColor: Colors.white);
       Navigator.push(context, MaterialPageRoute(builder: (context) => Profile2()));
     });

@@ -13,7 +13,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Phone Auth'),
+          automaticallyImplyLeading: false,
+        title: Text('Welcome to Vitamin_D'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -30,9 +31,14 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             Container(
               margin: EdgeInsets.only(top: 40, right: 10, left: 10),
-              child: TextField(
+              child: TextFormField(
+
                 decoration: InputDecoration(
-                  hintText: 'Phone Number',
+                  labelText: 'Phone Number',
+                  hintText: 'Enter Phone Number',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0)
+                  ),
                   prefix: Padding(
                     padding: EdgeInsets.all(4),
                     child: Text('+91'),
