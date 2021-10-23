@@ -4,8 +4,10 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:background_flutter_latest/config/palette.dart';
 import 'package:background_flutter_latest/custom_dialog_box.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
@@ -326,7 +328,7 @@ void _disconnect() async{
             Row(
               children: <Widget>[
                 Text(
-                  'Bluetooth State',
+                  'Turn ON/OFF Bluetooth',
                   style: const TextStyle(
                     fontSize: 22.0,
                     fontWeight: FontWeight.bold,
@@ -360,7 +362,67 @@ void _disconnect() async{
 
               ],
             ),
+        Container(
 
+          child: new GestureDetector(
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => BluetoothStates()));
+            },
+            child:new Container(
+
+              margin: const EdgeInsets.symmetric(
+                vertical: 10.0,
+                horizontal: 10.0,
+              ),
+              padding: const EdgeInsets.all(10.0),
+
+              height: MediaQuery.of(context).size.height*0.22,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFFAD9FE4),Palette.primaryColor],
+                ),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Image.asset('assets/glucose-meter.png'),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text('Steps to Follow: ',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.001),
+                      Text('1. Connect the meter to \napp using bluetooth.',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                        ),),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.001),
+                      Text('2. Place blood sample\non the strip.',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                        ),),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.001),
+                      Text('3. Your report will be\ngenerated now',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                        ),),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: DropdownButton(
@@ -373,62 +435,19 @@ void _disconnect() async{
             RaisedButton(
               color: Colors.green,
               onPressed: _isButtonUnavailable ? null : _connected ? _disconnect : _connect,
-              child: Text(_connected ? 'Disconnect' : 'Connect'),
+              child: Text(_connected ? 'Disconnect Test Device' : 'Connect Test Device',style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.italic,
+              ),),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Device Status',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 22.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                RaisedButton(
-                  textColor: Colors.white,
-                  color: Colors.green[600],
-                  onPressed: _connected ? _sendOnMessageToBluetooth:null,child: Text("ON"),
-                ),
-                RaisedButton(
-                  textColor: Colors.white,
-                  color: Colors.red,
-                  onPressed: _connected ? _sendOffMessageToBluetooth:null,child: Text("OFF"),
-                ),
-              ],
-            ),
-            Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: new Row(
-                  children: [
-                    Text('$textHolder',
-                      style: TextStyle(fontSize: 20),),
-                    Spacer(),
-                    Container(
-                      height: 50.0,
-                      width: 50.0,
-                      child: FittedBox(
-                        child: FloatingActionButton(
-                          heroTag: 'btn1',
-                          child: Icon(Icons.autorenew),
-                          onPressed:(){
-                            _computeData();
-                          },
-                        ),
-                      ),
 
-                    ),
-                  ],
-                )
-            ),
+
+
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Text(
-                'Test Report',
+                'Vitamin-D Test Report',
                 textAlign: TextAlign.center, 
                 style: const TextStyle(
                   fontSize: 22.0,
@@ -439,13 +458,40 @@ void _disconnect() async{
             FlutterGauge(
                 handSize: 25,
                 index:double.parse('$textHolder'),
-                end: 10,
+                end: 50,
                 number: Number.endAndCenterAndStart,
                 circleColor: Color(0xFF47505F),
                 secondsMarker:
                 SecondsMarker.secondsAndMinute,
                 counterStyle: TextStyle(
-                  color: Colors.black,fontSize: 20,
+                  color: Colors.white,fontSize: 20,
+                )
+            ),
+            Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: new Row(
+                  children: [
+                    Text('$textHolder'+" ng/ml",
+                      style: TextStyle(fontSize: 20),),
+                    Spacer(),
+                    Container(
+
+                      child: FittedBox(
+                        child: RaisedButton(
+                          color: Colors.orangeAccent,
+                          onPressed:(){
+                            _computeData();
+                          },
+                          child: Text('Generate Report',style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.normal,
+                          ),),
+                        ),
+                      ),
+
+                    ),
+                  ],
                 )
             ),
             Container(

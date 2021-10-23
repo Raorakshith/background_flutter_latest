@@ -1,9 +1,12 @@
 import 'dart:async';
 
+import 'package:background_flutter_latest/screens/profile1.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import 'asksymptoms.dart';
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key key}) : super(key: key);
 
@@ -120,16 +123,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
               SizedBox(
                 height: 10,
               ),
-              Card(
+              InkWell(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Profile1(),
+                    ),
+                  );
+                },
+              child: Card(
                   margin: EdgeInsets.symmetric(horizontal: 20.0,vertical: 8.0),
                   elevation: 2.0,
                   child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 12,horizontal: 30),
-                      child: Text("App Activity",style: TextStyle(
+                      child: Text("Edit Profile",style: TextStyle(
                           letterSpacing: 2.0,
                           fontWeight: FontWeight.w300
-                      ),))
-              ),
+                      ),),)
+              ),),
               SizedBox(
                 height: 15,
               ),

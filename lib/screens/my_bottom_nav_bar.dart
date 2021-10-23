@@ -37,30 +37,29 @@ class MyBottomNavBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Padding(padding: EdgeInsets.all(3.0),
-          child: InkWell(
-            customBorder: new CircleBorder(),
-            onTap: (){
-
-                  Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                  builder: (context) => NavPages(),
-                  ),
-                  );
-                  },
-            splashColor: Colors.blue,
-            child: IconButton(
-              iconSize: 30,
-              icon: Image.asset('assets/home.png'),
-              onPressed: () {}
-
+           // IconButton(
+           //    iconSize: 30,
+           //    splashColor: Colors.blue,
+           //    icon: Image.asset('assets/home.png'),
+           //    onPressed: () {}
+           //
+           //  ),
+          RawMaterialButton(
+            onPressed: () {}, //do your action
+            elevation: 1.0,
+            constraints: BoxConstraints(), //removes empty spaces around of icon
+            shape: CircleBorder(), //circular button
+            fillColor: Colors.white, //background color
+            splashColor: Colors.amber,
+            highlightColor: Colors.amber,
+            child: Image.asset(
+              "assets/home.png",
+              width: 30,
+              height: 30,
             ),
-          ),),
-
-          IconButton(
-            iconSize: 40,
-            icon: Image.asset('assets/reading.png'),
+            padding: EdgeInsets.all(8),
+          ),
+          RawMaterialButton(
             onPressed: () {
               Navigator.push(
                 context,
@@ -68,11 +67,21 @@ class MyBottomNavBar extends StatelessWidget {
                   builder: (context) => AskSymptoms(),
                 ),
               );
-            },
+            }, //do your action
+            elevation: 1.0,
+            constraints: BoxConstraints(), //removes empty spaces around of icon
+            shape: CircleBorder(), //circular button
+            fillColor: Colors.white, //background color
+            splashColor: Colors.amber,
+            highlightColor: Colors.amber,
+            child: Image.asset(
+              "assets/reading.png",
+              width: 40,
+              height: 40,
+            ),
+            padding: EdgeInsets.all(8),
           ),
-          IconButton(
-            iconSize: 40,
-            icon: Image.asset('assets/glucose-meter.png'),
+          RawMaterialButton(
             onPressed: () {
               Navigator.push(
                 context,
@@ -80,11 +89,21 @@ class MyBottomNavBar extends StatelessWidget {
                   builder: (context) => BluetoothStates(),
                 ),
               );
-            },
+            }, //do your action
+            elevation: 1.0,
+            constraints: BoxConstraints(), //removes empty spaces around of icon
+            shape: CircleBorder(), //circular button
+            fillColor: Colors.white, //background color
+            splashColor: Colors.amber,
+            highlightColor: Colors.amber,
+            child: Image.asset(
+              "assets/glucose-meter.png",
+              width: 40,
+              height: 40,
+            ),
+            padding: EdgeInsets.all(8),
           ),
-          IconButton(
-            iconSize: 40,
-            icon: Image.asset('assets/evaluation.png'),
+          RawMaterialButton(
             onPressed: () {
               Navigator.push(
                 context,
@@ -92,8 +111,21 @@ class MyBottomNavBar extends StatelessWidget {
                   builder: (context) => Compare(),
                 ),
               );
-            },
+            }, //do your action
+            elevation: 1.0,
+            constraints: BoxConstraints(), //removes empty spaces around of icon
+            shape: CircleBorder(), //circular button
+            fillColor: Colors.white, //background color
+            splashColor: Colors.amber,
+            highlightColor: Colors.amber,
+            child: Image.asset(
+              "assets/evaluation.png",
+              width: 40,
+              height: 40,
+            ),
+            padding: EdgeInsets.all(8),
           ),
+
         ],
       ),
     );

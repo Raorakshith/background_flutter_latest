@@ -12,12 +12,12 @@ import 'package:http/http.dart';
 import 'dart:convert';
 
 import 'main_drawer.dart';
-class Profile1 extends StatefulWidget {
+class EditProfile extends StatefulWidget {
   @override
-  _Profile1State createState() => _Profile1State();
+  EditProfileState createState() => EditProfileState();
 }
 
-class _Profile1State extends State<Profile1> {
+class EditProfileState extends State<EditProfile> {
   final referenceDatabase = FirebaseDatabase.instance;
   final FirebaseAuth auth = FirebaseAuth.instance;
   Position _position;
@@ -209,28 +209,28 @@ class _Profile1State extends State<Profile1> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: new Row(
-                  children: [
-                    Text('$textHolder',
-                    style: TextStyle(fontSize: 20),),
-                    Spacer(),
-                    Container(
-                      height: 50.0,
-                      width: 50.0,
-                      child: FittedBox(
-                        child: FloatingActionButton(
+                  padding: const EdgeInsets.all(8.0),
+                  child: new Row(
+                    children: [
+                      Text('$textHolder',
+                        style: TextStyle(fontSize: 20),),
+                      Spacer(),
+                      Container(
+                        height: 50.0,
+                        width: 50.0,
+                        child: FittedBox(
+                          child: FloatingActionButton(
                             heroTag: 'btn1',
                             child: Icon(Icons.autorenew),
                             onPressed:(){
                               calculateBMI();
                             },
-                      ),
-                    ),
+                          ),
+                        ),
 
-                    ),
-                  ],
-                )
+                      ),
+                    ],
+                  )
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -238,8 +238,8 @@ class _Profile1State extends State<Profile1> {
                   child: Container(
                     padding: EdgeInsets.all(15),
                     decoration: BoxDecoration(
-                      border: Border.all(width: 1,color: Colors.grey),
-                      borderRadius: BorderRadius.circular(10)),
+                        border: Border.all(width: 1,color: Colors.grey),
+                        borderRadius: BorderRadius.circular(10)),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
@@ -281,9 +281,9 @@ class _Profile1State extends State<Profile1> {
                         )
                       ],
                     ),
-                    ),
                   ),
                 ),
+              ),
 
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -307,17 +307,17 @@ class _Profile1State extends State<Profile1> {
                         title: Text('Save'),
                       ),
                     ),
-                  color: Colors.deepOrange,
-                  textColor: Colors.white,
-                  splashColor: Colors.deepOrange,
-                  padding: EdgeInsets.all(8.0),
-                  onPressed: (){
-                    if(formkey.currentState.validate()){
-                      saveToDatabase();
-                    }
-                    //formkey.currentState.validate();
-                    //getCurrentLocation();
-                  },
+                    color: Colors.deepOrange,
+                    textColor: Colors.white,
+                    splashColor: Colors.deepOrange,
+                    padding: EdgeInsets.all(8.0),
+                    onPressed: (){
+                      if(formkey.currentState.validate()){
+                        saveToDatabase();
+                      }
+                      //formkey.currentState.validate();
+                      //getCurrentLocation();
+                    },
                   ),
                 ),
               ),
@@ -366,16 +366,15 @@ class _Profile1State extends State<Profile1> {
     const oneSecond = const Duration(seconds: 1);
     var locationoptions = LocationOptions(accuracy: LocationAccuracy.high,distanceFilter: 10);
     referenceDatabase.reference().child("User Data").child(auth.currentUser.uid).child("Profile").once().then((DataSnapshot data){
-     // print(data.value.username);
-     // username.text(text: data.value.username.toString());
-     username = new TextEditingController(text: data.value['username']);
-     userheight = new TextEditingController(text: data.value['userheight']);
-     userweight = new TextEditingController(text: data.value['userweight']);
-     gender = data.value['usergender'];
-     if(userweight != null && userheight != null){
-       bmi = double.parse(userweight.text)/(((double.parse(userheight.text))/100)*((double.parse(userheight.text))/100));
-       textHolder = "Your BMI is "+bmi.toStringAsFixed(2);
-     }
+      // print(data.value.username);
+      // username.text(text: data.value.username.toString());
+      username = new TextEditingController(text: data.value['username']);
+      userheight = new TextEditingController(text: data.value['userheight']);
+      userweight = new TextEditingController(text: data.value['userweight']);
+      gender = data.value['usergender'];
+      if(userweight != null && userheight != null){
+        bmi = double.parse(userweight.text)/(((double.parse(userheight.text))/100)*((double.parse(userheight.text))/100));
+      }
       Fluttertoast.showToast(msg: data.value.username,toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM ,backgroundColor: Colors.grey,textColor: Colors.white);
     });
     _subscription = Geolocator().getPositionStream(locationoptions).listen((Position position) {
