@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:background_flutter_latest/screens/Posts1.dart';
+import 'package:background_flutter_latest/screens/comparison.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -138,7 +139,7 @@ class _FoodDataState extends State<FoodData> {
          final ref3 = referenceDatabase2.reference().child("User Data").child(user.uid).child("Food Datas").child(foodcode);
          ref3.set({'code':foodcode,'item':item,'vitd':vitd,'quantity':quantity}).whenComplete(() async{
            await Fluttertoast.showToast(msg: foodcode,toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM ,backgroundColor: Colors.grey,textColor: Colors.white);
-           //Navigator.push(context, MaterialPageRoute(builder: (context) => Profile2()));
+           Navigator.push(context, MaterialPageRoute(builder: (context) => Compare()));
          });
          // ref2.once().then((DataSnapshot data){
          //   ref3.set(data.value);

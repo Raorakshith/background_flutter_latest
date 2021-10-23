@@ -1,10 +1,14 @@
+import 'dart:async';
+
 import 'package:background_flutter_latest/screens/FoodData.dart';
+import 'package:background_flutter_latest/screens/ProfileScreen.dart';
 import 'package:background_flutter_latest/screens/asksymptoms.dart';
 import 'package:background_flutter_latest/screens/bluetooth.dart';
 import 'package:background_flutter_latest/screens/profile1.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'bottom_nav_screen.dart';
 import 'recommendations.dart';
@@ -32,13 +36,13 @@ String imageUrl, username, userdata;
               child: Column(
                 children: <Widget>[
                   Container(
-                    width: 100,
-                    height: 100,
+                    width: 120,
+                    height: 120,
                     margin: EdgeInsets.only(top: 30,bottom: 10),
+                    child: SvgPicture.asset('assets/vitamin d logo in svg_new.svg'),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      image: DecorationImage(image: NetworkImage('https://firebasestorage.googleapis.com/v0/b/loginpage-5c70d.appspot.com/o/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png?alt=media&token=a925cb9b-a030-4d29-b581-9edae243a0e8'),
-                      fit: BoxFit.fill),
+                      //
                     ),
                   ),
                   Text('$username',style: TextStyle(
@@ -75,7 +79,7 @@ String imageUrl, username, userdata;
               ),
             ),
             onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Profile1()));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen()));
             },
           ),
           ListTile(

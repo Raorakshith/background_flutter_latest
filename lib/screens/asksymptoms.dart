@@ -11,6 +11,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 
+import '../custom_dialog_box.dart';
 import 'main_drawer.dart';
 class AskSymptoms extends StatefulWidget {
   @override
@@ -592,7 +593,17 @@ class _AskSymptomsState extends State<AskSymptoms> {
                         onPressed:(){
                           //calculateBMI();
                           if(count >= 3){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => NextPage()));
+                            showDialog(context: context,
+                                builder: (BuildContext context){
+                                  return CustomDialogBox(
+                                    title: "Chat Result",
+                                    descriptions: "You have selected some symptoms of Vitamin-D. You can calculate your Vitamin-D and verify for better health",
+                                    text: "Check Now",
+                                    img: Image.asset("assets/mid.png"),
+                                  );
+                                }
+                            );
+                            //Navigator.push(context, MaterialPageRoute(builder: (context) => NextPage()));
                           }
                         },
                       ),

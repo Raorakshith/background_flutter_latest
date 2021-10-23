@@ -1,5 +1,6 @@
 import 'package:background_flutter_latest/screens/auth/otp.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 class LoginScreen1 extends StatefulWidget {
 
   @override
@@ -42,10 +43,11 @@ class _LoginScreen1State extends State<LoginScreen1> {
                           width: 150,
                           height: 150,
                           margin: EdgeInsets.only(top: 40,bottom: 10,left: MediaQuery.of(context).size.width/4),
+                          child: SvgPicture.asset('assets/vitamin d logo in svg_new.svg'),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            image: DecorationImage(image: NetworkImage('https://firebasestorage.googleapis.com/v0/b/loginpage-5c70d.appspot.com/o/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png?alt=media&token=a925cb9b-a030-4d29-b581-9edae243a0e8'),
-                                fit: BoxFit.fill),
+                            // image: DecorationImage(image: NetworkImage('https://firebasestorage.googleapis.com/v0/b/loginpage-5c70d.appspot.com/o/logo%202.png?alt=media&token=3880bcfe-3fc0-4ff9-aad9-aeb4f0b81980'),
+                            //     fit: BoxFit.fill),
                           ),
                         ),
                         SizedBox(height: 20.0,

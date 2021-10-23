@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="svg833"
+   width="361.42325"
+   height="359.90894"
+   viewBox="0 0 361.42325 359.90894"
+   sodipodi:docname="vitamin d logo in svg_new 23.10.2021.svg"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)">
+  <metadata
+     id="metadata839">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs837">
+    <linearGradient
+       id="linearGradient892"
+       osb:paint="gradient">
+      <stop
+         style="stop-color:#b3b3b3;stop-opacity:1;"
+         offset="0"
+         id="stop888" />
+      <stop
+         style="stop-color:#b3b3b3;stop-opacity:0;"
+         offset="1"
+         id="stop890" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     inkscape:document-rotation="0"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview835"
+     showgrid="false"
+     inkscape:zoom="1.9287109"
+     inkscape:cx="266.40081"
+     inkscape:cy="182.97387"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g841"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Image"
+     id="g841"
+     transform="translate(-19.683689,-3.0261269)">
+    <ellipse
+       style="opacity:0.875817;fill:#ffff00;fill-opacity:0.595238;stroke:#f9b713;stroke-width:36.527;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path845"
+       cx="200.39531"
+       cy="182.98059"
+       rx="162.44812"
+       ry="161.69096" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;fill:#800000;fill-opacity:1;stroke:none;stroke-width:1.00157;stroke-miterlimit:4;stroke-dasharray:none"
+       x="107.48708"
+       y="225.32588"
+       id="text908"><tspan
+         sodipodi:role="line"
+         id="tspan906"
+         x="107.48708"
+         y="225.32588"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:160px;font-family:Arial;-inkscape-font-specification:Arial;fill:#cb0000;fill-opacity:1;stroke-width:1.00157;stroke-miterlimit:4;stroke-dasharray:none">D</tspan></text>
+    <path
+       style="fill:#80dd73;fill-opacity:1;stroke:#000000;stroke-width:0.879481px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 80.393824,186.34622 59.606146,117.59799 4.08436,8.05813 7.69074,-6.46667 L 370.84066,121.33663 149.5048,261.39085 Z"
+       id="path910"
+       sodipodi:nodetypes="ccccccc" />
+  </g>
+</svg>

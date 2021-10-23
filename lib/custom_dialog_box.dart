@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:background_flutter_latest/constants.dart';
+import 'package:background_flutter_latest/screens/comparison.dart';
 import 'package:background_flutter_latest/screens/recommendations.dart';
 import 'package:background_flutter_latest/screens/recommendationsmoderate.dart';
 import 'package:flutter/cupertino.dart';
@@ -62,7 +63,11 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                       }else if(widget.descriptions.contains("You are moderate deficient in Vitamin-D. Please go through our suggestions")){
                         Navigator.of(context).pop();
                         Navigator.push(context, MaterialPageRoute(builder: (context) => RecommendModerate()));
-                      }else{
+                      }else if(widget.descriptions.contains("You have selected some symptoms of Vitamin-D. You can calculate your Vitamin-D and verify for better health")){
+                        Navigator.of(context).pop();
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Compare()));
+                      }
+                      else{
                         Navigator.of(context).pop();
                         Navigator.push(context, MaterialPageRoute(builder: (context) => Recommend()));
                       }

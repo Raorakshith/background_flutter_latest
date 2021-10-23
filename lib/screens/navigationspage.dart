@@ -1,6 +1,9 @@
 import 'package:background_flutter_latest/config/palette.dart';
 import 'package:background_flutter_latest/config/styles.dart';
 import 'package:background_flutter_latest/data/data.dart';
+import 'package:background_flutter_latest/screens/asksymptoms.dart';
+import 'package:background_flutter_latest/screens/bluetooth.dart';
+import 'package:background_flutter_latest/screens/comparison.dart';
 import 'package:background_flutter_latest/screens/main_drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +85,9 @@ class _NavPagesState extends State<NavPages> {
                         vertical: 10.0,
                         horizontal: 20.0,
                       ),
-                      onPressed: (){},
+                      onPressed: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => Compare()));
+                      },
                       color: Colors.red,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
@@ -100,7 +105,9 @@ class _NavPagesState extends State<NavPages> {
                         vertical: 10.0,
                         horizontal: 20.0,
                       ),
-                      onPressed: (){},
+                      onPressed: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => AskSymptoms()));
+                      },
                       color: Colors.blue,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
@@ -168,7 +175,13 @@ class _NavPagesState extends State<NavPages> {
   }
   SliverToBoxAdapter _buildYourOwnTest(double screenHeight){
     return SliverToBoxAdapter(
-      child: Container(
+
+      child: new GestureDetector(
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => BluetoothStates()));
+        },
+    child:new Container(
+
         margin: const EdgeInsets.symmetric(
           vertical: 10.0,
           horizontal: 20.0,
@@ -185,7 +198,7 @@ class _NavPagesState extends State<NavPages> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            Image.asset('assets/skintones/stet.png'),
+            Image.asset('assets/glucose-meter.png'),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -208,6 +221,7 @@ class _NavPagesState extends State<NavPages> {
           ],
         ),
       ),
+    ),
     );
   }
 }

@@ -13,10 +13,11 @@ import com.google.android.gms.location.ActivityRecognitionClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
 
 public class BackgroundDetectedActivitiesService extends Service {
     private static final String TAG = BackgroundDetectedActivitiesService.class.getSimpleName();
-
+    private DatabaseReference mRef;
     private Intent mIntentService;
     private PendingIntent mPendingIntent;
     private ActivityRecognitionClient mActivityRecognitionClient;

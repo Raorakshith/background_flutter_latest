@@ -18,13 +18,13 @@ void main() async {
 
 class MyApp extends StatelessWidget {
 
-  Future<void> startServiceInPlatform() async {
-    if(Platform.isAndroid){
-      var methodChannel = MethodChannel("my.login_page.vitamind.messages");
-      String data = await methodChannel.invokeMethod("startService");
-      debugPrint(data);
-    }
-  }
+  // Future<void> startServiceInPlatform() async {
+  //   if(Platform.isAndroid){
+  //     var methodChannel = MethodChannel("my.login_page.vitamind.messages");
+  //     String data = await methodChannel.invokeMethod("startService");
+  //     debugPrint(data);
+  //   }
+  // }
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {

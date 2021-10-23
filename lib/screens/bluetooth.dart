@@ -4,6 +4,7 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:background_flutter_latest/custom_dialog_box.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -187,6 +188,40 @@ void _computeData(){
   }
   //temp = bluetoothrecieveddatalist1.isEmpty ? 0 : bluetoothrecieveddatalist1.reduce(max);
   temp = bluetoothrecieveddatalist1.fold(bluetoothrecieveddatalist1[0],max);
+  if(temp>20){
+    showDialog(context: context,
+        builder: (BuildContext context){
+          return CustomDialogBox(
+            title: "Vitamin D Status",
+            descriptions: "You have sufficient level of Vitamin-D. Follow your diets regularly",
+            text: "OK",
+            img: Image.asset("assets/check.png"),
+          );
+        }
+    );
+  }else if(temp>12.5 && temp<20){
+    showDialog(context: context,
+        builder: (BuildContext context){
+          return CustomDialogBox(
+            title: "Vitamin D Status",
+            descriptions: "You are moderate deficient in Vitamin-D. Please go through our suggestions",
+            text: "OK",
+            img: Image.asset("assets/mid.png"),
+          );
+        }
+    );
+  }
+  else{
+    showDialog(context: context,
+        builder: (BuildContext context){
+          return CustomDialogBox(title: "Vitamin D Status",
+            descriptions: "You are low deficient in Vitamin-D. Please go through our suggestions",
+            text: "OK",
+            img: Image.asset("assets/cancel.png"),
+          );
+        }
+    );
+  }
   setState(() {
     textHolder = temp.toString();
   });

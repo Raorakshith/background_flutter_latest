@@ -41,11 +41,19 @@ import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,14 +64,13 @@ public class MyService extends Service {
     BroadcastReceiver broadcastReceiver;
     BackgroundDetectedActivitiesService ab;
     static int v = 0;
-    private String lats,longs;
+    private String lats,longs,currenttime="",uvvalue;
 private RequestQueue mRequestQueue;
 private StringRequest mStringRequest;
 LocationManager locationManager;
 private Timer timer;
 private TimerTask timerTask;
-
-
+private DatabaseReference mRef;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
@@ -72,7 +79,7 @@ private TimerTask timerTask;
         Intent intent1 = new Intent(this,MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent1,0);
         Notification notification = new NotificationCompat.Builder(this,"ChannelId1").setContentTitle("Background Check")
-                .setContentText("Applicaton running...")
+                .setContentText("Applicaton running..."+currenttime)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pendingIntent).build();
         startForeground(1,notification);
@@ -122,6 +129,7 @@ private TimerTask timerTask;
     }
 
     private void apiCall(String latt, String longr){
+
         String url = "https://api.weatherbit.io/v2.0/current?lat="+latt+"&lon="+longr+"&key=ac09fe29ca4b4e82875275042501e5d7";
 
         mRequestQueue = Volley.newRequestQueue(this);
@@ -145,9 +153,11 @@ private TimerTask timerTask;
                         String uvvalue = tutorialsObject.getString("uv").substring(0,1);
                         //Toast.makeText(MyService.this, "uvvalue:"+uvvalue, Toast.LENGTH_SHORT).show();
                         int uvindex = Integer.parseInt(uvvalue);
+
                         if(uvindex >= 3 && uvindex<=5){
                             buildNotification();
                         }
+
                         //creating a tutorial object and giving them the values from json object
 //                        Tutorial tutorial = new Tutorial(tutorialsObject.getString("name"), tutorialsObject.getString("imageurl"),tutorialsObject.getString("description"));
 //
@@ -169,6 +179,74 @@ private TimerTask timerTask;
         });
         mRequestQueue.add(mStringRequest);
 }
+    private void apiCall1(String latt, String longr){
+        Calendar cal1 = Calendar.getInstance();
+        SimpleDateFormat simpleformat1 = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat simpleformat2 = new SimpleDateFormat("dd-MM-yyyy");
+        String time, date;
+        time = simpleformat1.format(cal1.getTime());
+        date = simpleformat2.format(cal1.getTime());
+        String url = "https://api.weatherbit.io/v2.0/current?lat="+latt+"&lon="+longr+"&key=ac09fe29ca4b4e82875275042501e5d7";
+
+        mRequestQueue = Volley.newRequestQueue(this);
+        mStringRequest = new StringRequest(Request.Method.GET,url,new Response.Listener<String>(){
+
+            @Override
+            public void onResponse(String response) {
+                // Toast.makeText(MyService.this, "Response:"+response.toString(), Toast.LENGTH_SHORT).show();
+                try {
+                    //getting the whole json object from the response
+                    JSONObject obj = new JSONObject(response);
+
+                    //we have the array named tutorial inside the object
+                    //so here we are getting that json array
+                    JSONArray tutorialsArray = obj.getJSONArray("data");
+
+                    //now looping through all the elements of the json array
+                    for (int i = 0; i < 1; i++) {
+                        //getting the json object of the particular index inside the array
+                        JSONObject tutorialsObject = tutorialsArray.getJSONObject(i);
+                        String uvs = tutorialsObject.getString("uv");
+                        if(uvs.length() >=4 ){
+                             uvvalue = tutorialsObject.getString("uv").substring(0,3);
+                        }else {
+                             uvvalue = tutorialsObject.getString("uv").substring(0, 1);
+                        }
+                        //Toast.makeText(MyService.this, "uvvalue:"+uvvalue, Toast.LENGTH_SHORT).show();
+                       // String uvindex = Double.parseDouble(uvvalue);
+
+                        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+                            mRef = FirebaseDatabase.getInstance().getReference("User Data").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("UV INDEX").child(date);
+//                            UVdata uVdata = new UVdata(String.valueOf(uvindex),time);
+                              UVdata uVdata = new UVdata(uvvalue,time);
+                            mRef.child(time).setValue(uVdata).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Log.d(TAG, "onSuccess1hour: Data added after 1 hour");
+                                }
+                            });
+                        }
+                        //creating a tutorial object and giving them the values from json object
+//                        Tutorial tutorial = new Tutorial(tutorialsObject.getString("name"), tutorialsObject.getString("imageurl"),tutorialsObject.getString("description"));
+//
+//                        //adding the tutorial to tutoriallist
+//                        tutorialList.add(tutorial);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        },new Response.ErrorListener(){
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        mRequestQueue.add(mStringRequest);
+    }
     private void createNotificationChannel() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
@@ -212,6 +290,24 @@ private TimerTask timerTask;
             }
         }
     }
+    private void getLocation1() {
+        if (ActivityCompat.checkSelfPermission(
+                this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+        } else {
+            Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (locationGPS != null) {
+                double lat = locationGPS.getLatitude();
+                double longi = locationGPS.getLongitude();
+                lats = String.valueOf(lat);
+                longs = String.valueOf(longi);
+                apiCall1(lats,longs);
+            } else {
+                //Toast.makeText(this, "Unable to find location.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
     private void createNotificationChannel1() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
@@ -236,9 +332,41 @@ private TimerTask timerTask;
         timerTask = new TimerTask() {
             @Override
             public void run() {
+                Calendar cal = Calendar.getInstance();
+                SimpleDateFormat simpleformat = new SimpleDateFormat("hh:mm:ss");
+                String time;
+                time = simpleformat.format(cal.getTime());
                 Log.d("Running", "run: good");
-                //Toast.makeText(MyService.this, "running", Toast.LENGTH_SHORT).show();
                 getLocation();
+                //Toast.makeText(MyService.this, "running", Toast.LENGTH_SHORT).show();
+                if(currenttime == "") {
+                    currenttime = time;
+                    Log.d(TAG, "run current time: "+currenttime);
+                    getLocation1();
+                }else{
+                    try {
+                        Date startDate = simpleformat.parse(currenttime);
+                        Date endDate = simpleformat.parse(time);
+                        long difference = endDate.getTime() - startDate.getTime();
+                        if(difference<0)
+                        {
+                            Date dateMax = simpleformat.parse("24:00:00");
+                            Date dateMin = simpleformat.parse("00:00:00");
+                            difference=(dateMax.getTime() -startDate.getTime() )+(endDate.getTime()-dateMin.getTime());
+                        }
+                        int days = (int) (difference / (1000*60*60*24));
+                        int hours = (int) ((difference - (1000*60*60*24*days)) / (1000*60*60));
+                        int min = (int) (difference - (1000*60*60*24*days) - (1000*60*60*hours)) / (1000*60);
+                        int sec = (int) (difference - (1000*60*60*24*days) - (1000*60*60*hours) - (1000*60*min)) / (1000);
+                        if(hours>0){
+                            currenttime = time;
+                            getLocation1();
+                        }
+                        Log.i("log_tag_time","Hours: "+hours+", Mins: "+min+", Secs: "+sec);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
 
             }
         };
@@ -270,41 +398,49 @@ private TimerTask timerTask;
             case DetectedActivity.IN_VEHICLE: {
                 label = getString(R.string.activity_in_vehicle);
                // icon = R.drawable.ic_baseline_drive_eta_24;
+                android.util.Log.d(TAG, "handleUserActivity: VEHICLE");
                 break;
             }
             case DetectedActivity.ON_BICYCLE: {
                 label = getString(R.string.activity_on_bicycle);
+                android.util.Log.d(TAG, "handleUserActivity: BICYCLE");
                 //icon = R.drawable.ic_baseline_directions_bike_24;
                 break;
             }
             case DetectedActivity.ON_FOOT: {
                 label = getString(R.string.activity_on_foot);
                // icon = R.drawable.ic_baseline_directions_walk_24;
+                android.util.Log.d(TAG, "handleUserActivity: FOOT");
                 break;
             }
             case DetectedActivity.RUNNING: {
                 label = getString(R.string.activity_running);
+                android.util.Log.d(TAG, "handleUserActivity: RUNNING");
                 //icon = R.drawable.ic_baseline_run_circle_24;
                 break;
             }
             case DetectedActivity.STILL: {
                 label = getString(R.string.activity_still);
+                android.util.Log.d(TAG, "handleUserActivity: STILL");
                 //icon = R.drawable.ic_baseline_accessibility_24;
 
                 break;
             }
             case DetectedActivity.TILTING: {
                 label = getString(R.string.activity_tilting);
+                android.util.Log.d(TAG, "handleUserActivity: TILT");
                // icon = R.drawable.ic_baseline_filter_tilt_shift_24;
                 break;
             }
             case DetectedActivity.WALKING: {
                 label = getString(R.string.activity_walking);
+                android.util.Log.d(TAG, "handleUserActivity: WALK");
                 //icon = R.drawable.ic_baseline_directions_walk_24;
                 break;
             }
             case DetectedActivity.UNKNOWN: {
                 label = getString(R.string.activity_unknown);
+                android.util.Log.d(TAG, "handleUserActivity: UNKNOWN");
                 //icon = R.drawable.ic_baseline_device_unknown_24;
 
                 break;
@@ -319,6 +455,7 @@ private TimerTask timerTask;
 
 
             v = confidence;
+            android.util.Log.d(TAG, "handleUserActivity: "+label);
 //            txtActivity.setText(label);
 //            txtConfidence.setText("Confidence: " + confidence);
 //            imgActivity.setImageResource(icon);
@@ -330,6 +467,8 @@ private TimerTask timerTask;
             if(confidence > 50){
 
                 v = confidence;
+                android.util.Log.d(TAG, "handleUserActivity: "+label);
+
 //                txtActivity.setText(label);
 //                txtConfidence.setText("Confidence: " + confidence);
 //                imgActivity.setImageResource(icon);
@@ -338,6 +477,7 @@ private TimerTask timerTask;
             }
 
             else if (v <= confidence) {
+                android.util.Log.d(TAG, "handleUserActivity: "+label);
 
 //                txtActivity.setText(label);
 //                txtConfidence.setText("Confidence: " + confidence);

@@ -34,7 +34,7 @@ class _Profile1State extends State<Profile1> {
     {"id":'5', "image":"assets/skintones/alternativemedicine.jpg","name":"5"},
     {"id":'6', "image":"assets/skintones/alternativemedicine.jpg","name":"6"},
   ];
-  final username = TextEditingController();
+  var username = TextEditingController();
   final userheight = TextEditingController();
   final userweight = TextEditingController();
   //final userbmi = TextEditingController();
@@ -358,8 +358,20 @@ class _Profile1State extends State<Profile1> {
   @override
   void initState() {
     super.initState();
+    // referenceDatabase.reference().child("User Data").child(auth.currentUser.uid).child("Profile").once().then((DataSnapshot data) =>{
+    //   username.text = data.value.username;
+    // Fluttertoast.showToast(msg: "Uploaded successfully",toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM ,backgroundColor: Colors.grey,textColor: Colors.white);
+    //
+    // } );
     const oneSecond = const Duration(seconds: 1);
     var locationoptions = LocationOptions(accuracy: LocationAccuracy.high,distanceFilter: 10);
+    // referenceDatabase.reference().child("User Data").child(auth.currentUser.uid).child("Profile").once().then((DataSnapshot data){
+    //   print(data.value.username);
+    //  // username.text(text: data.value.username.toString());
+    //  username = new TextEditingController(text: data.value.username);
+    //
+    //   Fluttertoast.showToast(msg: data.value.username,toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM ,backgroundColor: Colors.grey,textColor: Colors.white);
+    // });
     _subscription = Geolocator().getPositionStream(locationoptions).listen((Position position) {
       setState(() {
         print(position);
