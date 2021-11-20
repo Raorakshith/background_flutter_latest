@@ -40,7 +40,7 @@ class _RecommendState extends State<Recommend> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF21BFBD),
+      backgroundColor: Color(0xffe11e2b),
       body: ListView(
         children: <Widget>[
           Padding(

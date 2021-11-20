@@ -35,13 +35,13 @@ class SplashScreen extends StatelessWidget {
 
   void _navigateToAuthScreen(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback(
-          (_) => Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen1())),
+          (_) => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen1())),
     );
   }
 
   void _navigateToHomeScreen(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback(
-          (_) => Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavScreen())),
+          (_) => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNavScreen())),
     );
   }
 }

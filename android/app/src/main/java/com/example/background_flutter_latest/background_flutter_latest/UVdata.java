@@ -1,7 +1,7 @@
 package com.example.background_flutter_latest.background_flutter_latest;
 public class UVdata {
-    String uvindex;
-    String time;
+    public String uvindex;
+    public String time;
 
     public UVdata(String uvindex, String time) {
         this.uvindex = uvindex;

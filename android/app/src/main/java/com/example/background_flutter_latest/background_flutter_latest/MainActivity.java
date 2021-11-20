@@ -25,7 +25,9 @@ public class MainActivity extends FlutterActivity {
         forService = new Intent(MainActivity.this,MyService.class);
         ActivityCompat.requestPermissions( MainActivity.this,
                 new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-        new MethodChannel(getFlutterEngine().getDartExecutor(),"my.login_page.vitamind.messages").setMethodCallHandler(new MethodChannel.MethodCallHandler() {
+        ActivityCompat.requestPermissions( MainActivity.this,
+                new String[] {Manifest.permission.ACCESS_BACKGROUND_LOCATION}, REQUEST_LOCATION);
+        new MethodChannel(getFlutterEngine().getDartExecutor(),"com.example.background_flutter_latest.background_flutter_latest.messages").setMethodCallHandler(new MethodChannel.MethodCallHandler() {
             @Override
             public void onMethodCall(MethodCall call, MethodChannel.Result result) {
                 if(call.method.equals("startService")){

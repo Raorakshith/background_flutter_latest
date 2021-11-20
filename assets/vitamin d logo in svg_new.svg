@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -8,95 +7,80 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
    inkscape:export-ydpi="250"
    inkscape:export-xdpi="250"
-   inkscape:export-filename="C:\Users\PC\Downloads\vitamin d logo in svg_new 23.10.2021png.png"
-   version="1.1"
-   id="svg833"
-   width="361.42325"
-   height="359.90894"
-   viewBox="0 0 361.42325 359.90894"
-   sodipodi:docname="new logo svg.svg"
-   inkscape:version="1.0 (4035a4fb49, 2020-05-01)">
-  <metadata
-     id="metadata839">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <defs
-     id="defs837">
-    <linearGradient
-       id="linearGradient892"
-       osb:paint="gradient">
-      <stop
-         style="stop-color:#b3b3b3;stop-opacity:1;"
-         offset="0"
-         id="stop888" />
-      <stop
-         style="stop-color:#b3b3b3;stop-opacity:0;"
-         offset="1"
-         id="stop890" />
-    </linearGradient>
-  </defs>
-  <sodipodi:namedview
-     inkscape:document-rotation="0"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1017"
-     id="namedview835"
-     showgrid="false"
-     inkscape:zoom="1.9287109"
-     inkscape:cx="266.40081"
-     inkscape:cy="182.97387"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="g841"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0" />
-  <g
-     inkscape:groupmode="layer"
-     inkscape:label="Image"
-     id="g841"
-     transform="translate(-19.683689,-3.0261269)">
-    <ellipse
-       style="opacity:0.875817;fill:#ffff00;fill-opacity:0.595238;stroke:#f9b713;stroke-width:36.527;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path845"
-       cx="200.39531"
-       cy="182.98059"
-       rx="162.44812"
-       ry="161.69096" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.25;font-family:Arial;-inkscape-font-specification:Arial;fill:#800000;fill-opacity:1;stroke:none;stroke-width:1.00157;stroke-miterlimit:4;stroke-dasharray:none"
-       x="107.48708"
-       y="225.32588"
-       id="text908"><tspan
-         sodipodi:role="line"
-         id="tspan906"
-         x="107.48708"
-         y="225.32588"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:160px;font-family:Arial;-inkscape-font-specification:Arial;fill:#cb0000;fill-opacity:1;stroke-width:1.00157;stroke-miterlimit:4;stroke-dasharray:none">D</tspan></text>
-    <path
-       style="fill:#f1dd73;fill-opacity:1;stroke:#000000;stroke-width:0.879481px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 80.393824,186.34622 59.606146,117.59799 4.08436,8.05813 7.69074,-6.46667 L 370.84066,121.33663 149.5048,261.39085 Z"
-       id="path910"
-       sodipodi:nodetypes="ccccccc" />
-  </g>
+   inkscape:export-filename="C:\Users\PC\OneDrive\Pictures\logo design_1.png"
+   height="257.93359"
+   width="294.97305"
+   sodipodi:docname="logo design_1.svg"
+   xml:space="preserve"
+   viewBox="0 0 294.97304 257.93359"
+   y="0px"
+   x="0px"
+   id="Layer_1"
+   version="1.1"><metadata
+   id="metadata18"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+   id="defs16" /><sodipodi:namedview
+   fit-margin-bottom="0"
+   fit-margin-right="0"
+   fit-margin-left="0"
+   fit-margin-top="0"
+   inkscape:current-layer="Layer_1"
+   inkscape:window-maximized="1"
+   inkscape:window-y="-8"
+   inkscape:window-x="-8"
+   inkscape:cy="182.9498"
+   inkscape:cx="142.37431"
+   inkscape:zoom="0.98294162"
+   showgrid="false"
+   id="namedview14"
+   inkscape:window-height="1017"
+   inkscape:window-width="1920"
+   inkscape:pageshadow="2"
+   inkscape:pageopacity="0"
+   guidetolerance="10"
+   gridtolerance="10"
+   objecttolerance="10"
+   borderopacity="1"
+   bordercolor="#666666"
+   pagecolor="#ffffff" />
+<style
+   id="style2"
+   type="text/css">
+	.st0{fill:#E11E2B;}
+	.st1{opacity:0.96;fill:url(#SVGID_1_);}
+</style>
+<rect
+   style="stroke-width:0.747588"
+   id="rect4"
+   height="257.93359"
+   width="294.97305"
+   class="st0"
+   y="0"
+   x="0" />
+<linearGradient
+   gradientTransform="translate(-155.2657,-237.99521)"
+   y2="243.81799"
+   x2="349.00671"
+   y1="471.74161"
+   x1="151.8092"
+   gradientUnits="userSpaceOnUse"
+   id="SVGID_1_">
+	<stop
+   id="stop6"
+   style="stop-color:#F04923"
+   offset="0" />
+	<stop
+   id="stop8"
+   style="stop-color:#F9ED2B"
+   offset="1" />
+</linearGradient>
+<path
+   style="fill:url(#SVGID_1_)"
+   id="path11"
+   d="m 291.6043,6.4747913 c -16.13,3.12 -33.45,1.49 -49.71,0.45 -9.34,-0.6 -19.28,-0.8 -28.24,2.32 -7.74,2.6999997 -14.97,7.4799997 -21.28,12.6399997 -12.38,10.12 -23.14,23.46 -29.4,38.25 -14.41,34.01 -29.46,69.569999 -50.81,99.849999 -1.85,2.62 -3.8,5.25 -6.39,7.15 -4.01,2.94 -9.440001,3.83 -14.170001,2.33 2.66,0.84 17.550001,-31.67 18.990001,-35.05 5.3,-12.42 9.16,-25.4 10.78,-38.829999 3.15,-26.1 -4.73,-55.03 -23.690001,-73.8 -12.43,-12.3099997 -30.12,-17.9399997 -47.3,-18.7199997 -8.94,-0.41 -17.96,0.47 -26.65,2.63 -4.21,1.05 -8.35,2.39 -12.35,4.08 -1.17,0.4899997 -4.6400003,1.4299997 -5.2200003,2.5899997 -0.94,1.89 1.87,5.87 2.62,7.51 16.2000003,35.27 36.2200003,68.52 53.8300003,103.069999 9.62,18.88 19.24,37.76 28.85,56.65 11.220001,22.03 25.320001,70.3 54.440001,74.37 8.5,1.19 17.06,-3.06 23.01,-9.25 10.44,-10.85 16.1,-27.57 22.9,-41.01 6.64,-13.12 13.27,-26.24 19.91,-39.35 15.19,-30.03 30.38,-60.05 45.57,-90.079999 8.17,-16.16 16.35,-32.31 24.52,-48.47 1.12,-2.18 7.28,-18.8399997 9.79,-19.3299997 z"
+   class="st1" />
 </svg>

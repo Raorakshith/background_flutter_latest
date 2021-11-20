@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ffi';
 import 'package:background_flutter_latest/screens/NextPage.dart';
+import 'package:background_flutter_latest/screens/my_bottom_nav_bar.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -28,6 +29,7 @@ class _AskSymptomsState extends State<AskSymptoms> {
   bool _isvisible6 = false;
   bool _isvisible7 = false;
   bool _isvisible8 = false;
+
   int count = 0;
   void showopt2(){
     setState(() {
@@ -81,12 +83,14 @@ class _AskSymptomsState extends State<AskSymptoms> {
         centerTitle:true,
       ),
       drawer: MainDrawer(),
+      bottomNavigationBar: MyBottomNavBar(),
       body: SingleChildScrollView(
         controller: controller,
         padding: EdgeInsets.symmetric(
           vertical: 10.0,
           horizontal: 10.0,
         ),
+
         child: Column(
           children: <Widget>[
             Row(
@@ -94,7 +98,7 @@ class _AskSymptomsState extends State<AskSymptoms> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    height: 150.0,
+                    height: 120.0,
                     width: 230.0,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(

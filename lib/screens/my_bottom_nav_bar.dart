@@ -1,6 +1,8 @@
 
+import 'package:background_flutter_latest/screens/ChatSymptoms.dart';
 import 'package:background_flutter_latest/screens/asksymptoms.dart';
 import 'package:background_flutter_latest/screens/bluetooth.dart';
+import 'package:background_flutter_latest/screens/bottom_nav_screen.dart';
 import 'package:background_flutter_latest/screens/comparison.dart';
 import 'package:background_flutter_latest/screens/navigationspage.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +47,14 @@ class MyBottomNavBar extends StatelessWidget {
            //
            //  ),
           RawMaterialButton(
-            onPressed: () {}, //do your action
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BottomNavScreen(),
+                ),
+              );
+            }, //do your action
             elevation: 1.0,
             constraints: BoxConstraints(), //removes empty spaces around of icon
             shape: CircleBorder(), //circular button
@@ -64,7 +73,7 @@ class MyBottomNavBar extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AskSymptoms(),
+                  builder: (context) => ChatSymptoms(),
                 ),
               );
             }, //do your action

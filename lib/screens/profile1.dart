@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ffi';
+import 'dart:ui';
 import 'package:background_flutter_latest/screens/profile2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -213,7 +214,7 @@ class _Profile1State extends State<Profile1> {
                 child: new Row(
                   children: [
                     Text('$textHolder',
-                    style: TextStyle(fontSize: 20),),
+                    style: TextStyle(fontSize: 18),),
                     Spacer(),
                     Container(
                       height: 50.0,
@@ -223,6 +224,7 @@ class _Profile1State extends State<Profile1> {
                             heroTag: 'btn1',
                             child: Icon(Icons.autorenew),
                             onPressed:(){
+                              //_displayDialogForSkinType(context);
                               calculateBMI();
                             },
                       ),
@@ -243,42 +245,60 @@ class _Profile1State extends State<Profile1> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Expanded(
-                          child: DropdownButtonHideUnderline(
-                            child: ButtonTheme(
-                              alignedDropdown: true,
-                              child: DropdownButton<String>(
-                                isDense: true,
-                                hint: new Text('Select Skin Complexion'),
-                                value: selected,
-                                onChanged: (String newValue){
-                                  setState(() {
-                                    selected = newValue;
-                                  });
-                                  print (selected);
-                                },
-                                items: _myJson.map((Map map){
-                                  return new DropdownMenuItem<String>(
-                                    value: map["name"].toString(),
-                                    child: Row(
-
-                                      children: <Widget>[
-                                        Image.asset(
-                                          map["image"],
-                                          width: 25,
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(left: 10),
-                                          child: Text(map["name"]),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
+                        Text('SkinType: '+'$selected',
+                          style: TextStyle(fontSize: 18),),
+                        Spacer(),
+                        Container(
+                          height: 50.0,
+                          width: 50.0,
+                          child: FittedBox(
+                            child: FloatingActionButton(
+                              heroTag: 'btn1',
+                              child: Icon(Icons.add_box),
+                              onPressed:(){
+                                _displayDialogForSkinType(context);
+                                //calculateBMI();
+                              },
                             ),
                           ),
-                        )
+
+                        ),
+                        // Expanded(
+                        //   child: DropdownButtonHideUnderline(
+                        //     child: ButtonTheme(
+                        //       alignedDropdown: true,
+                        //       child: DropdownButton<String>(
+                        //         isDense: true,
+                        //         hint: new Text('Select Skin Complexion'),
+                        //         value: selected,
+                        //         onChanged: (String newValue){
+                        //           setState(() {
+                        //             selected = newValue;
+                        //           });
+                        //           print (selected);
+                        //         },
+                        //         items: _myJson.map((Map map){
+                        //           return new DropdownMenuItem<String>(
+                        //             value: map["name"].toString(),
+                        //             child: Row(
+                        //
+                        //               children: <Widget>[
+                        //                 Image.asset(
+                        //                   map["image"],
+                        //                   width: 25,
+                        //                 ),
+                        //                 Container(
+                        //                   margin: EdgeInsets.only(left: 10),
+                        //                   child: Text(map["name"]),
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //           );
+                        //         }).toList(),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // )
                       ],
                     ),
                     ),
@@ -371,6 +391,7 @@ class _Profile1State extends State<Profile1> {
      username = new TextEditingController(text: data.value['username']);
      userheight = new TextEditingController(text: data.value['userheight']);
      userweight = new TextEditingController(text: data.value['userweight']);
+     selected = data.value['skin complexion'];
      gender = data.value['usergender'];
      if(userweight != null && userheight != null){
        bmi = double.parse(userweight.text)/(((double.parse(userheight.text))/100)*((double.parse(userheight.text))/100));
@@ -398,6 +419,221 @@ class _Profile1State extends State<Profile1> {
     addressesdes = result.toString();
     print(result);
     return result;
+  }
+  _displayDialogForSkinType(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (context,setState){
+                return AlertDialog(
+                  title: Text('Select Skin Complexion'),
+                  content: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    //position
+                    mainAxisSize: MainAxisSize.min,
+                    // wrap content in flutter
+                    children: <Widget>[
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height*0.4,
+                          child: Column(
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Column(
+                                    children: <Widget>[
+                                      RawMaterialButton(
+                                        onPressed: () {
+                                          selected = "1";
+                                          setState((){});
+                                        }, //do your action
+                                        elevation: 1.0,
+                                        constraints: BoxConstraints(), //removes empty spaces around of icon
+                                        shape: RoundedRectangleBorder(), //circular button
+                                        fillColor: Colors.white, //background color
+                                        splashColor: Colors.amber,
+                                        highlightColor: Colors.amber,
+                                        child: Image.asset(
+                                          "assets/skintones/skin1.png",
+                                          width: MediaQuery.of(context).size.width*0.15,
+                                          height: MediaQuery.of(context).size.height*0.1,
+                                        ),
+                                        padding: EdgeInsets.all(8),
+                                      ),
+                                      SizedBox(height: 2,),
+                                      Text('Type 1',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14),textAlign: TextAlign.center,),
+                                      SizedBox(height: 2,),
+                                      Text('Light,\nPale White',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),textAlign: TextAlign.center,),
+                                    ],
+                                  ),
+                                  Spacer(),
+                                  Column(
+                                    children: <Widget>[
+                                      RawMaterialButton(
+                                        onPressed: () {
+                                          selected = "2";
+                                          setState((){});
+                                        }, //do your action
+                                        elevation: 1.0,
+                                        constraints: BoxConstraints(), //removes empty spaces around of icon
+                                        shape: RoundedRectangleBorder(), //circular button
+                                        fillColor: Colors.white, //background color
+                                        splashColor: Colors.amber,
+                                        highlightColor: Colors.amber,
+                                        child: Image.asset(
+                                          "assets/skintones/skin2.png",
+                                          width: MediaQuery.of(context).size.width*0.15,
+                                          height: MediaQuery.of(context).size.height*0.1,
+                                        ),
+                                        padding: EdgeInsets.all(8),
+                                      ),
+                                      SizedBox(height: 2,),
+                                      Text('Type 2',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14),textAlign: TextAlign.center,),
+                                      SizedBox(height: 2,),
+                                      Text('White,\nFair',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),textAlign: TextAlign.center,),
+                                    ],
+                                  ),
+                                  Spacer(),
+                                  Column(
+                                    children: <Widget>[
+                                      RawMaterialButton(
+                                        onPressed: () {
+                                          selected = "3";
+                                          setState((){});
+                                        }, //do your action
+                                        elevation: 1.0,
+                                        constraints: BoxConstraints(), //removes empty spaces around of icon
+                                        shape: RoundedRectangleBorder(), //circular button
+                                        fillColor: Colors.white, //background color
+                                        splashColor: Colors.amber,
+                                        highlightColor: Colors.amber,
+                                        child: Image.asset(
+                                          "assets/skintones/skin3.png",
+                                          width: MediaQuery.of(context).size.width*0.15,
+                                          height: MediaQuery.of(context).size.height*0.1,
+                                        ),
+                                        padding: EdgeInsets.all(8),
+                                      ),
+                                      SizedBox(height: 2,),
+                                      Text('Type 3',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14),textAlign: TextAlign.center,),
+                                      SizedBox(height: 2,),
+                                      Text('Medium,\nWhite to\nOlive',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),textAlign: TextAlign.center,),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Column(
+                                    children: <Widget>[
+                                      RawMaterialButton(
+                                        onPressed: () {
+                                          selected = "4";
+                                          setState((){});
+                                        }, //do your action
+                                        elevation: 1.0,
+                                        constraints: BoxConstraints(), //removes empty spaces around of icon
+                                        shape: RoundedRectangleBorder(), //circular button
+                                        fillColor: Colors.white, //background color
+                                        splashColor: Colors.amber,
+                                        highlightColor: Colors.amber,
+                                        child: Image.asset(
+                                          "assets/skintones/skin4.png",
+                                          width: MediaQuery.of(context).size.width*0.15,
+                                          height: MediaQuery.of(context).size.height*0.1,
+                                        ),
+                                        padding: EdgeInsets.all(8),
+                                      ),
+                                      SizedBox(height: 2,),
+                                      Text('Type 4',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14),textAlign: TextAlign.center,),
+                                      SizedBox(height: 2,),
+                                      Text('Olive,\nmoderate brown',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),textAlign: TextAlign.center,),
+                                    ],
+                                  ),
+                                  
+                                  Spacer(),
+                                  Column(
+                                    children: <Widget>[
+                                      RawMaterialButton(
+                                        onPressed: () {
+                                          selected = "5";
+                                          setState((){});
+                                        }, //do your action
+                                        elevation: 1.0,
+                                        constraints: BoxConstraints(), //removes empty spaces around of icon
+                                        shape: RoundedRectangleBorder(), //circular button
+                                        fillColor: Colors.white, //background color
+                                        splashColor: Colors.amber,
+                                        highlightColor: Colors.amber,
+                                        child: Image.asset(
+                                          "assets/skintones/skin5.png",
+                                          width: MediaQuery.of(context).size.width*0.15,
+                                          height: MediaQuery.of(context).size.height*0.1,
+                                        ),
+                                        padding: EdgeInsets.all(8),
+                                      ),
+                                      SizedBox(height: 2,),
+                                      Text('Type 5',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14),textAlign: TextAlign.center,),
+                                      SizedBox(height: 2,),
+                                      Text('Brown,\nDark brown',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),textAlign: TextAlign.center,),
+                                    ],
+                                  ),
+                                  Spacer(),
+                                  Column(
+                                    children: <Widget>[
+                                      RawMaterialButton(
+                                        onPressed: () {
+                                          selected = "6";
+                                          setState((){});
+                                        }, //do your action
+                                        elevation: 1.0,
+                                        constraints: BoxConstraints(), //removes empty spaces around of icon
+                                        shape: RoundedRectangleBorder(), //circular button
+                                        fillColor: Colors.white, //background color
+                                        splashColor: Colors.amber,
+                                        highlightColor: Colors.amber,
+                                        child: Image.asset(
+                                          "assets/skintones/skin6.png",
+                                          width: MediaQuery.of(context).size.width*0.15,
+                                          height: MediaQuery.of(context).size.height*0.1,
+                                        ),
+                                        padding: EdgeInsets.all(8),
+                                      ),
+                                      SizedBox(height: 2,),
+                                      Text('Type 6',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14),textAlign: TextAlign.center,),
+                                      SizedBox(height: 2,),
+                                      Text('Black,\nvery dark\nbrown',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),textAlign: TextAlign.center,),
+                                    ],
+                                  ),
+                                ],
+                              ),
+
+                            ],
+                          ),
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Text('Type '+'$selected', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                          Spacer(),
+                          RaisedButton(
+                            color: Colors.white,
+                            onPressed: (){
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('OK',style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic,
+                            ),),
+                          ),
+                        ],
+                      )
+                  ],
+                ));
+              });
+
+        });
   }
   Future getUVIndex(String lats, String longs) async{
     Response response = await get('https://api.weatherbit.io/v2.0/current?lat='+lats+'&lon='+longs+'&key=ac09fe29ca4b4e82875275042501e5d7');

@@ -6,12 +6,16 @@ import 'dart:ui';
 
 import 'package:background_flutter_latest/config/palette.dart';
 import 'package:background_flutter_latest/custom_dialog_box.dart';
+import 'package:background_flutter_latest/screens/my_bottom_nav_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:flutter_gauge/flutter_gauge.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 
 import 'main_drawer.dart';
 
@@ -21,7 +25,8 @@ class BluetoothStates extends StatefulWidget {
 }
 
 class _BluetoothStatesState extends State<BluetoothStates> {
-BluetoothState _bluetoothState = BluetoothState.UNKNOWN;
+  TextEditingController _controller = TextEditingController();
+  BluetoothState _bluetoothState = BluetoothState.UNKNOWN;
 final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
 FlutterBluetoothSerial _bluetoothSerial = FlutterBluetoothSerial.instance;
 BluetoothConnection connection;
@@ -33,10 +38,13 @@ bool isDisconnecting = false;
 bool _connected = false;
 String textHolder = '0';
 bool _isButtonUnavailable = false;
+bool _didmanual = false;
 var voltage ="";
+var tempdata;
 List<BluetoothDevice> _devicesList = [];
 List<String> bluetoothrecieveddata = [];
 final reference = FirebaseDatabase.instance.reference().child("Vitamin D values");
+final reference1 = FirebaseDatabase.instance.reference().child("User Data").child(FirebaseAuth.instance.currentUser.uid).child("Test Reports");
 
 @override
   void dispose() {
@@ -178,10 +186,23 @@ void _sendOffMessageToBluetooth() async{
   });
 
 }
+void saveToDatabase(valuesoftemp,statusvalue){
+  var data=
+  {
+    "testValue": valuesoftemp,
+    "status": statusvalue,
+    "date": DateFormat('yMd').format(DateTime.now()),
+    "time":DateFormat('hh:mm:ss').format(DateTime.now()),
+  };
+  reference1.child(DateFormat('hh:mm:ss').format(DateTime.now()).toString()).set(data).whenComplete(() async{
+    await Fluttertoast.showToast(msg: "Test Report saved",toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM ,backgroundColor: Colors.grey,textColor: Colors.white);
+  });
+
+}
 void _computeData(){
   List<double> bluetoothrecieveddatalist1 = [];
   double temp = 0;
-  for(int i=0;i<9;i++){
+  for(int i=0;i<5;i++){
     bluetoothrecieveddatalist1.add(double.parse(bluetoothrecieveddata[i]));
     // temp = double.parse(bluetoothrecieveddata.elementAt(0));
     // if(double.parse(bluetoothrecieveddata.elementAt(i+1)) >= temp){
@@ -190,40 +211,44 @@ void _computeData(){
   }
   //temp = bluetoothrecieveddatalist1.isEmpty ? 0 : bluetoothrecieveddatalist1.reduce(max);
   temp = bluetoothrecieveddatalist1.fold(bluetoothrecieveddatalist1[0],max);
-  if(temp>20){
-    showDialog(context: context,
-        builder: (BuildContext context){
-          return CustomDialogBox(
-            title: "Vitamin D Status",
-            descriptions: "You have sufficient level of Vitamin-D. Follow your diets regularly",
-            text: "OK",
-            img: Image.asset("assets/check.png"),
-          );
-        }
-    );
-  }else if(temp>12.5 && temp<20){
-    showDialog(context: context,
-        builder: (BuildContext context){
-          return CustomDialogBox(
-            title: "Vitamin D Status",
-            descriptions: "You are moderate deficient in Vitamin-D. Please go through our suggestions",
-            text: "OK",
-            img: Image.asset("assets/mid.png"),
-          );
-        }
-    );
-  }
-  else{
-    showDialog(context: context,
-        builder: (BuildContext context){
-          return CustomDialogBox(title: "Vitamin D Status",
-            descriptions: "You are low deficient in Vitamin-D. Please go through our suggestions",
-            text: "OK",
-            img: Image.asset("assets/cancel.png"),
-          );
-        }
-    );
-  }
+  tempdata = temp.toString();
+  // if(temp>20){
+  //   saveToDatabase(temp.toString(),"Sufficient");
+  //   showDialog(context: context,
+  //       builder: (BuildContext context){
+  //         return CustomDialogBox(
+  //           title: "Vitamin D Status",
+  //           descriptions: "You have sufficient level of Vitamin-D. Follow your diets regularly",
+  //           text: "OK",
+  //           img: Image.asset("assets/check.png"),
+  //         );
+  //       }
+  //   );
+  // }else if(temp>12.5 && temp<20){
+  //   saveToDatabase(temp.toString(),"Moderate");
+  //   showDialog(context: context,
+  //       builder: (BuildContext context){
+  //         return CustomDialogBox(
+  //           title: "Vitamin D Status",
+  //           descriptions: "You are moderate deficient in Vitamin-D. Please go through our suggestions",
+  //           text: "OK",
+  //           img: Image.asset("assets/mid.png"),
+  //         );
+  //       }
+  //   );
+  // }
+  // else{
+  //   saveToDatabase(temp.toString(),"Deficient");
+  //   showDialog(context: context,
+  //       builder: (BuildContext context){
+  //         return CustomDialogBox(title: "Vitamin D Status",
+  //           descriptions: "You are low deficient in Vitamin-D. Please go through our suggestions",
+  //           text: "OK",
+  //           img: Image.asset("assets/cancel.png"),
+  //         );
+  //       }
+  //   );
+  // }
   setState(() {
     textHolder = temp.toString();
   });
@@ -318,6 +343,7 @@ void _disconnect() async{
         centerTitle: true,
       ),
       drawer: MainDrawer(),
+      bottomNavigationBar: MyBottomNavBar(),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
           vertical: 10.0,
@@ -426,6 +452,7 @@ void _disconnect() async{
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: DropdownButton(
+                isDense: true,
                 items: _getDeviceItems(),
                 onChanged: (value) =>
                 setState(()=> _device = value),
@@ -433,12 +460,13 @@ void _disconnect() async{
               ),
             ),
             RaisedButton(
-              color: Colors.green,
+              color: Color(0xffe11e2b),
               onPressed: _isButtonUnavailable ? null : _connected ? _disconnect : _connect,
               child: Text(_connected ? 'Disconnect Test Device' : 'Connect Test Device',style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 fontStyle: FontStyle.italic,
+                color: Colors.white
               ),),
             ),
 
@@ -455,6 +483,7 @@ void _disconnect() async{
                 ),
               ),
             ),
+
             FlutterGauge(
                 handSize: 25,
                 index:double.parse('$textHolder'),
@@ -467,6 +496,19 @@ void _disconnect() async{
                   color: Colors.white,fontSize: 20,
                 )
             ),
+
+            // Container(
+            //   padding: EdgeInsets.only(left: 20.0),
+            //   height: 40,
+            //   child: ListView.builder(
+            //     scrollDirection: Axis.horizontal,
+            //     itemCount: bluetoothrecieveddata.length,
+            //     itemBuilder: (_, index)=>
+            //         Text(bluetoothrecieveddata[index]+"     ",style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+            //
+            //   ),
+            //
+            // ),
             Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: new Row(
@@ -482,7 +524,7 @@ void _disconnect() async{
                           onPressed:(){
                             _computeData();
                           },
-                          child: Text('Generate Report',style: TextStyle(
+                          child: Text('Generate Test Report',style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
                             fontStyle: FontStyle.normal,
@@ -494,22 +536,251 @@ void _disconnect() async{
                   ],
                 )
             ),
-            Container(
-                      height: 150,
-                      child: ListView.builder(
-                          itemCount: bluetoothrecieveddata.length,
-                          itemBuilder: (_, index){
-                            return Text(bluetoothrecieveddata[index]);
-                          }
+            Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: new Row(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width*0.5,
+                      child: TextFormField(
+
+                        decoration: InputDecoration(
+                          labelText: 'Lab Report(ng/ml)',
+                          hintText: 'Enter Lab Test Report(ng/ml)',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20.0)
+                          ),
+                        ),
+                        keyboardType: TextInputType.number,
+                        controller: _controller,
+                        enabled: _didmanual,
                       ),
-                      // child: ListView(
-                      //   children: [
-                      //     _dietFoodItem('assets/skintones/alternativemedicine.jpg', 'food 1', '10 mcg'),
-                      //     _dietFoodItem('assets/skintones/cardiology.jpg', 'food 2', '10 mcg'),
-                      //     _dietFoodItem('assets/skintones/pediatrics.jpg', 'food 3', '10 mcg')
-                      //   ]
-                      // )
+                    ),
+
+                    Spacer(),
+                    Container(
+
+                      child: FittedBox(
+                        child: RaisedButton(
+                          color: Colors.orangeAccent,
+                          onPressed:(){
+                             tempdata = _controller.text;
+                            _didmanual = true;
+                            setState(() {
+                              _didmanual = true;
+                            });
+
+                    },
+                          child: Text('Add Lab Report',style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.normal,
+                          ),),
+                        ),
+                      ),
+
+                    ),
+                  ],
+                )
             ),
+
+
+            RaisedButton(
+              color: Colors.green,
+              onPressed:(){
+                // var temp = double.parse(tempdata);
+                if(_didmanual) {
+                  var temp = double.parse(_controller.text);
+                  if (temp > 20) {
+                    saveToDatabase(temp.toString(), "Sufficient");
+                    showDialog(context: context,
+                        builder: (BuildContext context) {
+                          return CustomDialogBox(
+                            title: "Vitamin D Status",
+                            descriptions: "You have sufficient level of Vitamin-D. Follow your diets regularly",
+                            text: "OK",
+                            img: Image.asset("assets/check.png"),
+                          );
+                        }
+                    );
+                  } else if (temp > 12.5 && temp < 20) {
+                    saveToDatabase(temp.toString(), "Moderate");
+                    showDialog(context: context,
+                        builder: (BuildContext context) {
+                          return CustomDialogBox(
+                            title: "Vitamin D Status",
+                            descriptions: "You have insufficient Vitamin-D. Please go through our suggestions",
+                            text: "OK",
+                            img: Image.asset("assets/mid.png"),
+                          );
+                        }
+                    );
+                  }
+                  else {
+                    saveToDatabase(temp.toString(), "Deficient");
+                    showDialog(context: context,
+                        builder: (BuildContext context) {
+                          return CustomDialogBox(title: "Vitamin D Status",
+                            descriptions: "You are low deficient in Vitamin-D. Please go through our suggestions",
+                            text: "OK",
+                            img: Image.asset("assets/cancel.png"),
+                          );
+                        }
+                    );
+                  }
+                }else{
+                  var temp = double.parse(tempdata);
+                  if (temp > 20) {
+                    saveToDatabase(temp.toString(), "Sufficient");
+                    showDialog(context: context,
+                        builder: (BuildContext context) {
+                          return CustomDialogBox(
+                            title: "Vitamin D Status",
+                            descriptions: "You have sufficient level of Vitamin-D. Follow your diets regularly",
+                            text: "OK",
+                            img: Image.asset("assets/check.png"),
+                          );
+                        }
+                    );
+                  } else if (temp > 12.5 && temp < 20) {
+                    saveToDatabase(temp.toString(), "Moderate");
+                    showDialog(context: context,
+                        builder: (BuildContext context) {
+                          return CustomDialogBox(
+                            title: "Vitamin D Status",
+                            descriptions: "You are moderate deficient in Vitamin-D. Please go through our suggestions",
+                            text: "OK",
+                            img: Image.asset("assets/mid.png"),
+                          );
+                        }
+                    );
+                  }
+                  else {
+                    saveToDatabase(temp.toString(), "Deficient");
+                    showDialog(context: context,
+                        builder: (BuildContext context) {
+                          return CustomDialogBox(title: "Vitamin D Status",
+                            descriptions: "You are low deficient in Vitamin-D. Please go through our suggestions",
+                            text: "OK",
+                            img: Image.asset("assets/cancel.png"),
+                          );
+                        }
+                    );
+                  }
+                }
+              },
+              child: Text('Get Recommendations',style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.normal,
+                color: Colors.white
+              ),),
+            ),
+
+            Container(
+              padding: EdgeInsets.only(left: 20.0),
+              height: 150,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: bluetoothrecieveddata.length,
+                itemBuilder: (_, index)=>
+                    Text(bluetoothrecieveddata[index]+"     ",style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+
+              ),
+
+            ),
+             RaisedButton(
+              color: Colors.grey,
+              onPressed:(){
+                bluetoothrecieveddata.clear();
+                setState(() {
+
+                });
+
+              },
+              child: Text('Clear Values',style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.normal,
+              ),),
+            ),
+            // Padding(
+            //     padding: const EdgeInsets.all(8.0),
+            //     child: new Row(
+            //       children: [
+            //         TextFormField(
+            //
+            //           decoration: InputDecoration(
+            //             labelText: 'Lab Report(ng/ml)',
+            //             hintText: 'Enter Lab Test Report(ng/ml)',
+            //             border: OutlineInputBorder(
+            //                 borderRadius: BorderRadius.circular(20.0)
+            //             ),
+            //           ),
+            //           maxLength: 10,
+            //           keyboardType: TextInputType.number,
+            //           controller: _controller,
+            //         ),
+          //           Spacer(),
+          //           Container(
+          //
+          //             child: FittedBox(
+          //               child: RaisedButton(
+          //                 color: Colors.orangeAccent,
+          //                 onPressed:(){
+          //                   var temp = double.parse(_controller.text);
+          //                   if(temp>20){
+          //                     saveToDatabase(temp.toString(),"Sufficient");
+          //                     showDialog(context: context,
+          //                         builder: (BuildContext context){
+          //                           return CustomDialogBox(
+          //                             title: "Vitamin D Status",
+          //                             descriptions: "You have sufficient level of Vitamin-D. Follow your diets regularly",
+          //                             text: "OK",
+          //                             img: Image.asset("assets/check.png"),
+          //                           );
+          //                         }
+          //                     );
+          //                   }else if(temp>12.5 && temp<20){
+          //                     saveToDatabase(temp.toString(),"Moderate");
+          //                     showDialog(context: context,
+          //                         builder: (BuildContext context){
+          //                           return CustomDialogBox(
+          //                             title: "Vitamin D Status",
+          //                             descriptions: "You are moderate deficient in Vitamin-D. Please go through our suggestions",
+          //                             text: "OK",
+          //                             img: Image.asset("assets/mid.png"),
+          //                           );
+          //                         }
+          //                     );
+          //                   }
+          //                   else{
+          //                     saveToDatabase(temp.toString(),"Deficient");
+          //                     showDialog(context: context,
+          //                         builder: (BuildContext context){
+          //                           return CustomDialogBox(title: "Vitamin D Status",
+          //                             descriptions: "You are low deficient in Vitamin-D. Please go through our suggestions",
+          //                             text: "OK",
+          //                             img: Image.asset("assets/cancel.png"),
+          //                           );
+          //                         }
+          //                     );
+          //                   }
+          //
+          //                 },
+          //                 child: Text('Check Now',style: TextStyle(
+          //                   fontSize: 14,
+          //                   fontWeight: FontWeight.bold,
+          //                   fontStyle: FontStyle.normal,
+          //                 ),),
+          //               ),
+          //             ),
+          //
+          //           ),
+          //         ],
+          //       )
+          //   ),
+          //
           ],
         ),
       ),

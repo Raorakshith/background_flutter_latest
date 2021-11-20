@@ -10,6 +10,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../showuvcaptureddata.dart';
 import 'bottom_nav_screen.dart';
 import 'recommendations.dart';
 
@@ -20,18 +21,19 @@ String imageUrl, username, userdata;
   Future<void> _signOut() async {
     await FirebaseAuth.instance.signOut();
   }
+
   @override
   Widget build(BuildContext context) {
     referenceDatabase.child("username").once().then((DataSnapshot data){
       username = data.value;
     });
     return Drawer(
-      child: Column(
+      child: SingleChildScrollView(child: Column(
         children: <Widget>[
           Container(
             width: double.infinity,
             padding: EdgeInsets.all(20),
-            color: Theme.of(context).primaryColor,
+            color: Color(0xffe11e2b),
             child: Center(
               child: Column(
                 children: <Widget>[
@@ -39,9 +41,12 @@ String imageUrl, username, userdata;
                     width: 120,
                     height: 120,
                     margin: EdgeInsets.only(top: 30,bottom: 10),
-                    child: SvgPicture.asset('assets/vitamin d logo in svg_new.svg'),
+                    child: Image.asset('assets/skintones/vitamindlogo.png'),
+                    //child: SvgPicture.asset('assets/vitamin d logo in svg_new.svg'),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
+                      color: Color(0xffe11e2b),
+
                       //
                     ),
                   ),
@@ -50,10 +55,7 @@ String imageUrl, username, userdata;
                     color: Colors.white,
                   ),
                   ),
-                  Text('Useremail@gmail.com',style: TextStyle(
-                    color: Colors.white,
-                  ),
-                  ),
+
                 ],
               ),
             ),
@@ -131,7 +133,21 @@ String imageUrl, username, userdata;
               _signOut();
             },
           ),
+          ListTile(
+            leading: Icon(Icons.logout),
+            title: Text(
+              'Check UV Data',
+              style: TextStyle(
+                fontSize: 18,
+              ),
+            ),
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ShowCapturedUVdata()));
+              // _signOut();
+            },
+          ),
         ],
+      ),
       ),
     );
   }

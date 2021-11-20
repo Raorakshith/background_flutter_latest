@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -64,25 +65,30 @@ public class MyService extends Service {
     BroadcastReceiver broadcastReceiver;
     BackgroundDetectedActivitiesService ab;
     static int v = 0;
-    private String lats,longs,currenttime="",uvvalue;
-private RequestQueue mRequestQueue;
-private StringRequest mStringRequest;
-LocationManager locationManager;
-private Timer timer;
-private TimerTask timerTask;
-private DatabaseReference mRef;
+    private String lats, longs, currenttime = "", uvvalue;
+    private RequestQueue mRequestQueue;
+    private StringRequest mStringRequest;
+    LocationManager locationManager;
+    private Timer timer;
+    private TimerTask timerTask;
+    private DatabaseReference mRef;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
         createNotificationChannel();
         createNotificationChannel1();
-        Intent intent1 = new Intent(this,MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent1,0);
-        Notification notification = new NotificationCompat.Builder(this,"ChannelId1").setContentTitle("Background Check")
-                .setContentText("Applicaton running..."+currenttime)
+        sharedPreferences = getApplicationContext().getSharedPreferences("Location Data", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        Intent intent1 = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent1, 0);
+        Notification notification = new NotificationCompat.Builder(this, "ChannelId1").setContentTitle("Background Check")
+                .setContentText("Applicaton running..." + currenttime)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pendingIntent).build();
-        startForeground(1,notification);
+        startForeground(1, notification);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 
@@ -93,16 +99,13 @@ private DatabaseReference mRef;
             if (!isMyServiceRunning(ab.getClass())) {
 
 
-
-
-                v =0;
+                v = 0;
                 startTracking();
+                getLocation1();
 
-            }
+            } else {
 
-            else{
-
-               // Toast.makeText(MainActivity.this,   "Service Already Running", Toast.LENGTH_LONG).show();
+                // Toast.makeText(MainActivity.this,   "Service Already Running", Toast.LENGTH_LONG).show();
 
             }
             startTimer();
@@ -128,16 +131,17 @@ private DatabaseReference mRef;
 
     }
 
-    private void apiCall(String latt, String longr){
+    private void apiCall(String latt, String longr) {
 
-        String url = "https://api.weatherbit.io/v2.0/current?lat="+latt+"&lon="+longr+"&key=ac09fe29ca4b4e82875275042501e5d7";
+        String url = "https://api.weatherbit.io/v2.0/current?lat=" + latt + "&lon=" + longr + "&key=ac09fe29ca4b4e82875275042501e5d7";
+        Log.d(TAG, "apiCall1: Getting started1");
 
         mRequestQueue = Volley.newRequestQueue(this);
-        mStringRequest = new StringRequest(Request.Method.GET,url,new Response.Listener<String>(){
+        mStringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
-               // Toast.makeText(MyService.this, "Response:"+response.toString(), Toast.LENGTH_SHORT).show();
+                // Toast.makeText(MyService.this, "Response:"+response.toString(), Toast.LENGTH_SHORT).show();
                 try {
                     //getting the whole json object from the response
                     JSONObject obj = new JSONObject(response);
@@ -150,11 +154,11 @@ private DatabaseReference mRef;
                     for (int i = 0; i < 1; i++) {
                         //getting the json object of the particular index inside the array
                         JSONObject tutorialsObject = tutorialsArray.getJSONObject(i);
-                        String uvvalue = tutorialsObject.getString("uv").substring(0,1);
+                        String uvvalue = tutorialsObject.getString("uv").substring(0, 1);
                         //Toast.makeText(MyService.this, "uvvalue:"+uvvalue, Toast.LENGTH_SHORT).show();
                         int uvindex = Integer.parseInt(uvvalue);
 
-                        if(uvindex >= 3 && uvindex<=5){
+                        if (uvindex >= 3 && uvindex <= 5) {
                             buildNotification();
                         }
 
@@ -170,7 +174,7 @@ private DatabaseReference mRef;
                 }
 
             }
-        },new Response.ErrorListener(){
+        }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -178,18 +182,21 @@ private DatabaseReference mRef;
             }
         });
         mRequestQueue.add(mStringRequest);
-}
-    private void apiCall1(String latt, String longr){
+    }
+
+    private void apiCall1(String latt, String longr) {
         Calendar cal1 = Calendar.getInstance();
         SimpleDateFormat simpleformat1 = new SimpleDateFormat("HH:mm:ss");
         SimpleDateFormat simpleformat2 = new SimpleDateFormat("dd-MM-yyyy");
-        String time, date;
+        String time;
+        String date;
+        final String[] uvvalu = new String[1];
         time = simpleformat1.format(cal1.getTime());
         date = simpleformat2.format(cal1.getTime());
-        String url = "https://api.weatherbit.io/v2.0/current?lat="+latt+"&lon="+longr+"&key=ac09fe29ca4b4e82875275042501e5d7";
-
+        String url = "https://api.weatherbit.io/v2.0/current?lat=" + latt + "&lon=" + longr + "&key=ac09fe29ca4b4e82875275042501e5d7";
+        Log.d(TAG, "apiCall1: Getting started");
         mRequestQueue = Volley.newRequestQueue(this);
-        mStringRequest = new StringRequest(Request.Method.GET,url,new Response.Listener<String>(){
+        mStringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
@@ -207,18 +214,18 @@ private DatabaseReference mRef;
                         //getting the json object of the particular index inside the array
                         JSONObject tutorialsObject = tutorialsArray.getJSONObject(i);
                         String uvs = tutorialsObject.getString("uv");
-                        if(uvs.length() >=4 ){
-                             uvvalue = tutorialsObject.getString("uv").substring(0,3);
-                        }else {
-                             uvvalue = tutorialsObject.getString("uv").substring(0, 1);
+                        if (uvs.length() >= 4) {
+                            uvvalu[0] = tutorialsObject.getString("uv").substring(0, 3);
+                        } else {
+                            uvvalu[0] = tutorialsObject.getString("uv").substring(0, 1);
                         }
                         //Toast.makeText(MyService.this, "uvvalue:"+uvvalue, Toast.LENGTH_SHORT).show();
-                       // String uvindex = Double.parseDouble(uvvalue);
+                        // String uvindex = Double.parseDouble(uvvalue);
 
-                        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+                        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                             mRef = FirebaseDatabase.getInstance().getReference("User Data").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("UV INDEX").child(date);
 //                            UVdata uVdata = new UVdata(String.valueOf(uvindex),time);
-                              UVdata uVdata = new UVdata(uvvalue,time);
+                            UVdata uVdata = new UVdata(uvvalu[0], time);
                             mRef.child(time).setValue(uVdata).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
@@ -238,7 +245,7 @@ private DatabaseReference mRef;
                 }
 
             }
-        },new Response.ErrorListener(){
+        }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -247,11 +254,11 @@ private DatabaseReference mRef;
         });
         mRequestQueue.add(mStringRequest);
     }
+
     private void createNotificationChannel() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        {
-            NotificationChannel notificationChannel= new NotificationChannel(
-                    "ChannelId1","Foreground Notification", NotificationManager.IMPORTANCE_DEFAULT
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(
+                    "ChannelId1", "Foreground Notification", NotificationManager.IMPORTANCE_DEFAULT
             );
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(notificationChannel);
@@ -268,31 +275,15 @@ private DatabaseReference mRef;
     public void onDestroy() {
         Intent broadcastintent = new Intent();
         broadcastintent.setAction("restartservice");
-        broadcastintent.setClass(this,Restarter.class);
+        broadcastintent.setClass(this, Restarter.class);
         this.sendBroadcast(broadcastintent);
         super.onDestroy();
     }
-    private void getLocation() {
+
+    private void getLocation(String status) {
+        Log.d(TAG, "getLocation: function called");
         if (ActivityCompat.checkSelfPermission(
-                this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-           // ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-        } else {
-            Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (locationGPS != null) {
-                double lat = locationGPS.getLatitude();
-                double longi = locationGPS.getLongitude();
-                lats = String.valueOf(lat);
-                longs = String.valueOf(longi);
-                apiCall(lats,longs);
-            } else {
-                //Toast.makeText(this, "Unable to find location.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-    private void getLocation1() {
-        if (ActivityCompat.checkSelfPermission(
-                this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
         } else {
@@ -302,11 +293,58 @@ private DatabaseReference mRef;
                 double longi = locationGPS.getLongitude();
                 lats = String.valueOf(lat);
                 longs = String.valueOf(longi);
-                apiCall1(lats,longs);
+                editor.putString("latitutde", lats);
+                editor.putString("longitude", longs);
+                editor.apply();
+                if (status.equals("true")) {
+                    apiCall(lats, longs);
+                }
             } else {
                 //Toast.makeText(this, "Unable to find location.", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void getLocation1() {
+        Log.d(TAG, "getLocation1: also called");
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            Log.d(TAG, "getLocation1: comming here");
+            return;
+        }
+        Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (locationGPS != null) {
+            double lat = locationGPS.getLatitude();
+            double longi = locationGPS.getLongitude();
+            lats = String.valueOf(lat);
+            longs = String.valueOf(longi);
+            Log.d(TAG, "getLocation1: goinf to call");
+            apiCall1(lats,longs);
+        } else {
+            //Toast.makeText(this, "Unable to find location.", Toast.LENGTH_SHORT).show();
+        }
+//        if (ActivityCompat.checkSelfPermission(
+//                this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+//                this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            // ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+//        } else {
+//            Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//            if (locationGPS != null) {
+//                double lat = locationGPS.getLatitude();
+//                double longi = locationGPS.getLongitude();
+//                lats = String.valueOf(lat);
+//                longs = String.valueOf(longi);
+//                apiCall1(sharedPreferences.getString("latitude",lats),sharedPreferences.getString("longitude",longs));
+//            } else {
+//                //Toast.makeText(this, "Unable to find location.", Toast.LENGTH_SHORT).show();
+//            }
+//        }
     }
     private void createNotificationChannel1() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
@@ -337,12 +375,14 @@ private DatabaseReference mRef;
                 String time;
                 time = simpleformat.format(cal.getTime());
                 Log.d("Running", "run: good");
-                getLocation();
+                getLocation("false");
+
                 //Toast.makeText(MyService.this, "running", Toast.LENGTH_SHORT).show();
                 if(currenttime == "") {
                     currenttime = time;
                     Log.d(TAG, "run current time: "+currenttime);
                     getLocation1();
+                    getLocation("true");
                 }else{
                     try {
                         Date startDate = simpleformat.parse(currenttime);
@@ -358,9 +398,12 @@ private DatabaseReference mRef;
                         int hours = (int) ((difference - (1000*60*60*24*days)) / (1000*60*60));
                         int min = (int) (difference - (1000*60*60*24*days) - (1000*60*60*hours)) / (1000*60);
                         int sec = (int) (difference - (1000*60*60*24*days) - (1000*60*60*hours) - (1000*60*min)) / (1000);
-                        if(hours>0){
+                        if(min == 10){
+                            Log.d(TAG, "run111: now calling");
                             currenttime = time;
                             getLocation1();
+                            getLocation("true");
+
                         }
                         Log.i("log_tag_time","Hours: "+hours+", Mins: "+min+", Secs: "+sec);
                     } catch (ParseException e) {

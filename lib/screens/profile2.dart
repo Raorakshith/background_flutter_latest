@@ -16,14 +16,13 @@ class _Profile2State extends State<Profile2> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final referenceDatabase = FirebaseDatabase.instance;
   final formkey = new GlobalKey<FormState>();
-  final userhealth = TextEditingController();
+  // final userhealth = TextEditingController();
   String preg,child,old,kidney,liver;
   void saveToDatabase(){
     final User user = auth.currentUser;
     final ref = referenceDatabase.reference();
     var data=
     {
-      "userhealth" : userhealth.text.toString(),
       "pregnant" : preg,
       "children" : child,
       "oldage" : old,
@@ -56,25 +55,25 @@ class _Profile2State extends State<Profile2> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text('Let us know more ',style:TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold,color: Colors.black) ,),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: userhealth,
-                  validator: (String value){
-                    if(value.isEmpty){
-                      return 'This field cannot be empty';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'General Health',
-                    hintText: 'Tell us about your health',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.0)
-                    ),
-                  ),
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: TextFormField(
+              //     controller: userhealth,
+              //     validator: (String value){
+              //       if(value.isEmpty){
+              //         return 'This field cannot be empty';
+              //       }
+              //       return null;
+              //     },
+              //     decoration: InputDecoration(
+              //       labelText: 'General Health',
+              //       hintText: 'Tell us about your health',
+              //       border: OutlineInputBorder(
+              //           borderRadius: BorderRadius.circular(20.0)
+              //       ),
+              //     ),
+              //   ),
+              // ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text("Are you Pregnant ?",style:TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold,color: Colors.black),),
@@ -279,9 +278,10 @@ class _Profile2State extends State<Profile2> {
                 splashColor: Colors.deepOrange,
                 padding: EdgeInsets.all(8.0),
                 onPressed: (){
-                  if(formkey.currentState.validate()){
                     saveToDatabase();
-                  }
+                  // if(formkey.currentState.validate()){
+                  //   saveToDatabase();
+                  // }
                   //formkey.currentState.validate();
                   //getCurrentLocation();
                 },

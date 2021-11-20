@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:ffi';
+import 'dart:ui';
 import 'package:background_flutter_latest/screens/FoodData.dart';
 import 'package:background_flutter_latest/screens/Posts1.dart';
 import 'package:background_flutter_latest/screens/SunData.dart';
+import 'package:background_flutter_latest/screens/UVdatalist.dart';
+import 'package:background_flutter_latest/screens/my_bottom_nav_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -31,6 +34,9 @@ class _CompareState extends State<Compare> {
   List<Posts1> postsList = [];
   List<SunData> sunlightDataList = [];
   List<UVdata> uvdata = [];
+  List<UVdatalist> uvdatalist = [];
+  List<String> time = ['12-1','1-2','2-3','3-4','4-5','5-6','6-7','7-8','8-9','9-10','10-11','11-12'];
+
   final exposuretime = TextEditingController();
   final exposureduration = TextEditingController();
   final reference = FirebaseDatabase.instance.reference().child("User Data").child(FirebaseAuth.instance.currentUser.uid).child("Food Datas");
@@ -39,6 +45,9 @@ class _CompareState extends State<Compare> {
   final referenceDatabase = FirebaseDatabase.instance.reference().child("User Data").child(FirebaseAuth.instance.currentUser.uid).child("Profile");
   final referenceDatabase1 = FirebaseDatabase.instance.reference().child("Sunlight Data");
   final referenceDatabase2 = FirebaseDatabase.instance.reference().child("VitaminD Exposure");
+  final reference4 = FirebaseDatabase.instance.reference().child("UVSunData");
+  final reference14 = FirebaseDatabase.instance.reference().child("User Data").child(FirebaseAuth.instance.currentUser.uid).child("Track Reports");
+var selected, selectedtime;
   Position _position;
   StreamSubscription<Position> _subscription;
   Address _address;
@@ -47,6 +56,7 @@ class _CompareState extends State<Compare> {
   String lat,long,addressesdes;
   TextEditingController _textFieldController = TextEditingController();
   String _selectedTime,_selectedTime1;
+
 
   // We don't need to pass a context to the _show() function
   // You can safety use context as below
@@ -106,6 +116,19 @@ class _CompareState extends State<Compare> {
     print(diff_mn);
     print(diff_sc);
   }
+  void saveToDatabase(valuesoftemp,statusvalue){
+    var data=
+    {
+      "testValue": valuesoftemp,
+      "status": statusvalue,
+      "date": DateFormat('yMd').format(DateTime.now()),
+      "time":DateFormat('hh:mm:ss').format(DateTime.now()),
+    };
+    reference14.child(DateFormat('hh:mm:ss').format(DateTime.now()).toString()).set(data).whenComplete(() async{
+      await Fluttertoast.showToast(msg: "Test Report saved",toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM ,backgroundColor: Colors.grey,textColor: Colors.white);
+    });
+
+  }
   _displayDialog(BuildContext context) async {
     return showDialog(
         context: context,
@@ -158,6 +181,24 @@ class _CompareState extends State<Compare> {
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0)
                             ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: RaisedButton(
+                          onPressed:(){ _displayDialogForSkinType(context);},
+                          child: Text(
+                            'Select Cloud Type',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: RaisedButton(
+                          onPressed:(){ _displayDialogForTime(context);},
+                          child: Text(
+                            'Select Time',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
@@ -223,7 +264,7 @@ class _CompareState extends State<Compare> {
                         var key = reference1.push().key;
                         String durationexp = "${two.difference(one).inMinutes}";
                         print("${two.difference(one).inMinutes}");
-                        referenceDatabase2.child(skintype).child(textHolder).once().then((DataSnapshot data){
+                        referenceDatabase2.child(skintype).child(textHolder.substring(0,1)).once().then((DataSnapshot data){
                            expdut = (double.parse(data.value)*double.parse(durationexp)).toStringAsFixed(2);
                           // totals = comvalue+count;
                           // result = totals.toStringAsFixed(2);
@@ -249,6 +290,88 @@ class _CompareState extends State<Compare> {
 
         });
   }
+  _displayDialogTime(BuildContext context) async {
+    List<UVdatalist> _tempSelectedCities = [];
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (context,setState){
+                return AlertDialog(
+                  title: Text('TextField AlertDemo'),
+                  content: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    //position
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              RaisedButton(
+                                  onPressed: (){},
+                              color: Colors.grey,
+                              child: Text('AM',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),),
+                              RaisedButton(
+                                onPressed: (){},
+                                color: Colors.grey,
+                                child: Text('PM',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),)
+                            ],
+                          ),
+                          // Text(
+                          //   'Time Select',
+                          //   style: TextStyle(fontSize: 18.0, color: Colors.black),
+                          //   textAlign: TextAlign.center,
+                          // ),
+                          RaisedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            color: Color(0xFFfab82b),
+                            child: Text(
+                              'Done',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                            itemCount: uvdatalist.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              final cityName = uvdatalist[index].time;
+                              return Container(
+                                child: CheckboxListTile(
+                                    title: Text(cityName),
+                                    value: _tempSelectedCities.contains(cityName),
+                                    onChanged: (bool value) {
+                                      if (value) {
+                                        if (!_tempSelectedCities.contains(cityName)) {
+                                          setState(() {
+                                            _tempSelectedCities.add(uvdatalist[index]);
+                                          });
+                                        }
+                                      } else {
+                                        if (_tempSelectedCities.contains(cityName)) {
+                                          setState(() {
+                                            _tempSelectedCities.removeWhere(
+                                                    (UVdatalist city) => city == uvdatalist[index]);
+                                          });
+                                        }
+                                      }
+                                      // widget
+                                      //     .onSelectedCitiesListChanged(_tempSelectedCities);
+                                    }),
+                              );
+                            }),
+                      ),
+                    ],
+                  ),);
+              });
+
+        });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -258,6 +381,7 @@ class _CompareState extends State<Compare> {
         centerTitle: true,
       ),
         drawer: MainDrawer(),
+    bottomNavigationBar: MyBottomNavBar(),
     body:SingleChildScrollView(
     padding: EdgeInsets.symmetric(
     vertical: 10.0,
@@ -265,34 +389,15 @@ class _CompareState extends State<Compare> {
     ),
     child: Column(
      children:<Widget>[
-       Padding(
-         padding: const EdgeInsets.all(8.0),
-         child: ListTile(
-           leading: FaIcon(FontAwesomeIcons.sun),
-           title: Text("UV index"),
-           trailing: Text('$temp'),
-         ),
-       ),
-       Padding(
-         padding: const EdgeInsets.all(8.0),
-         child: Center(
-           child: RaisedButton(
-             child: Center(
-               child: ListTile(
-                 leading: FaIcon(FontAwesomeIcons.upload),
-                 title: Text('Add Items'),
-               ),
-             ),
-             color: Colors.white,
-             textColor: Colors.black,
-             splashColor: Colors.black12,
-             padding: EdgeInsets.all(3.0),
-             onPressed: (){
-               Navigator.push(context, MaterialPageRoute(builder: (context) => FoodData()));
-             },
-           ),
-         ),
-       ),
+       // Padding(
+       //   padding: const EdgeInsets.all(8.0),
+       //   child: ListTile(
+       //     leading: FaIcon(FontAwesomeIcons.sun),
+       //     title: Text("UV index"),
+       //     trailing: Text('$temp'),
+       //   ),
+       // ),
+
        Container(
          child: Center(
            child: Text(
@@ -370,6 +475,26 @@ class _CompareState extends State<Compare> {
        //     ),
        //   ),
        // ),
+       Padding(
+         padding: const EdgeInsets.all(8.0),
+         child: Center(
+           child: RaisedButton(
+             child: Center(
+               child: ListTile(
+                 leading: FaIcon(FontAwesomeIcons.upload),
+                 title: Text('Add Items'),
+               ),
+             ),
+             color: Colors.green,
+             textColor: Colors.black,
+             splashColor: Colors.black12,
+             padding: EdgeInsets.all(3.0),
+             onPressed: (){
+               Navigator.push(context, MaterialPageRoute(builder: (context) => FoodData()));
+             },
+           ),
+         ),
+       ),
        Container(
          child: Center(
            child: Text(
@@ -417,7 +542,7 @@ class _CompareState extends State<Compare> {
                  title: Text('Enter Data Manually'),
                ),
              ),
-             color: Colors.blue,
+             color: Colors.yellow,
              textColor: Colors.white,
              splashColor: Colors.deepOrange,
              padding: EdgeInsets.all(8.0),
@@ -434,7 +559,7 @@ class _CompareState extends State<Compare> {
              child: Center(
                child: ListTile(
                  leading: FaIcon(FontAwesomeIcons.upload),
-                 title: Text('Compute'),
+                 title: Text('Generate Evaluation Report',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,color: Colors.white),),
                ),
              ),
              color: Colors.deepOrange,
@@ -488,7 +613,7 @@ class _CompareState extends State<Compare> {
         _position = position;
         lat = position.latitude.toString();
         long = position.longitude.toString();
-        getUVIndex(position.latitude.toString(), position.longitude.toString());
+        //getUVIndex(position.latitude.toString(), position.longitude.toString());
         final coordinates = new Coordinates(position.latitude,position.longitude);
         convertCoordinatesToAddress(coordinates).then((value)=> _address=value);
       });
@@ -551,6 +676,23 @@ class _CompareState extends State<Compare> {
         uvdata.add(sunData);
       }
     });
+    reference4.once().then((DataSnapshot snap){
+      var Keys = snap.value.keys;
+      var Data = snap.value;
+      for(var individualkey in Keys)
+      {
+        UVdatalist posts = new UVdatalist(
+          Data[individualkey]['time'],
+          Data[individualkey]['cloud80'],
+          Data[individualkey]['cloud90'],
+          Data[individualkey]['cloud100'],
+          Data[individualkey]['clearcloud'],
+          Data[individualkey]['type']
+        );
+        uvdatalist.add(posts);
+        print(uvdatalist);
+      }
+    });
     new Timer.periodic(oneSecond,(Timer t) => setState((){}));
   }
 
@@ -588,6 +730,7 @@ class _CompareState extends State<Compare> {
     Fluttertoast.showToast(msg:count.toString()+":"+count1.toString()+":"+result,toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM ,backgroundColor: Colors.grey,textColor: Colors.white);
 
     if(totals>15){
+      saveToDatabase(result,"Sufficient");
       showDialog(context: context,
           builder: (BuildContext context){
             return CustomDialogBox(
@@ -599,6 +742,7 @@ class _CompareState extends State<Compare> {
           }
       );
     }else if(totals>12.5 && totals<15){
+      saveToDatabase(result,"Moderate");
       showDialog(context: context,
           builder: (BuildContext context){
             return CustomDialogBox(
@@ -611,6 +755,7 @@ class _CompareState extends State<Compare> {
       );
     }
     else{
+      saveToDatabase(result,"Deficient");
       showDialog(context: context,
           builder: (BuildContext context){
             return CustomDialogBox(title: "Vitamin D Status",
@@ -823,6 +968,268 @@ class _CompareState extends State<Compare> {
         ),
       ),
     );
+  }
+  _displayDialogForTime(BuildContext context) async {
+    List<String> _tempSelectedCities = [];
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (context,setState){
+                return AlertDialog(
+                    title: Text('Select Sun Data '),
+                    content: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      //position
+                      mainAxisSize: MainAxisSize.min,
+                      // wrap content in flutter
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height*0.7,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            //position
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      RaisedButton(
+                                        onPressed: (){},
+                                        color: Colors.grey,
+                                        child: Text('AM',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),),
+                                      RaisedButton(
+                                        onPressed: (){},
+                                        color: Colors.grey,
+                                        child: Text('PM',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),)
+                                    ],
+                                  ),
+                                  // Text(
+                                  //   'Time Select',
+                                  //   style: TextStyle(fontSize: 18.0, color: Colors.black),
+                                  //   textAlign: TextAlign.center,
+                                  // ),
+                                  RaisedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    color: Color(0xFFfab82b),
+                                    child: Text(
+                                      'Done',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Expanded(
+                                child: ListView.builder(
+                                    itemCount: uvdatalist.length,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      final cityName = time[index];
+                                      return Container(
+                                        child: CheckboxListTile(
+                                            title: Text(cityName),
+                                            value: _tempSelectedCities.contains(cityName),
+                                            onChanged: (bool value) {
+                                              if (value) {
+                                                if (!_tempSelectedCities.contains(cityName)) {
+                                                  setState(() {
+                                                    _tempSelectedCities.add(cityName);
+                                                  });
+                                                }
+                                              } else {
+                                                if (_tempSelectedCities.contains(cityName)) {
+                                                  setState(() {
+                                                    _tempSelectedCities.removeWhere(
+                                                            (String city) => city == cityName);
+                                                  });
+                                                }
+                                              }
+                                              // widget
+                                              //     .onSelectedCitiesListChanged(_tempSelectedCities);
+                                            }
+                                        ));
+                                    }),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                );
+              });
+
+        });
+  }
+  _displayDialogForSkinType(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (context,setState){
+                return AlertDialog(
+                    title: Text('Select Sun Data '),
+                    content: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      //position
+                      mainAxisSize: MainAxisSize.min,
+                      // wrap content in flutter
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height*0.7,
+                          child: Column(
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Column(
+                                    children: <Widget>[
+                                      RawMaterialButton(
+                                        onPressed: () {
+                                          selected = "1";
+                                          setState((){});
+                                        }, //do your action
+                                        elevation: 1.0,
+                                        constraints: BoxConstraints(), //removes empty spaces around of icon
+                                        shape: RoundedRectangleBorder(), //circular button
+                                        fillColor: Colors.white, //background color
+                                        splashColor: Colors.amber,
+                                        highlightColor: Colors.amber,
+                                        child: Image.asset(
+                                          "assets/skintones/clearsky.jpg",
+                                          width: MediaQuery.of(context).size.width*0.30,
+                                          height: MediaQuery.of(context).size.height*0.25,
+                                          fit: BoxFit.cover,
+                                        ),
+                                        padding: EdgeInsets.all(8),
+                                      ),
+                                      SizedBox(height: 2,),
+                                      Text('Clear Sky',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14),textAlign: TextAlign.center,),
+                                      SizedBox(height: 2,),
+                                      Text('Sunny',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),textAlign: TextAlign.center,),
+                                    ],
+                                  ),
+                                  Spacer(),
+                                  Column(
+                                    children: <Widget>[
+                                      RawMaterialButton(
+                                        onPressed: () {
+                                          selected = "2";
+                                          setState((){});
+                                        }, //do your action
+                                        elevation: 1.0,
+                                        constraints: BoxConstraints(), //removes empty spaces around of icon
+                                        shape: RoundedRectangleBorder(), //circular button
+                                        fillColor: Colors.white, //background color
+                                        splashColor: Colors.amber,
+                                        highlightColor: Colors.amber,
+                                        child: Image.asset(
+                                          "assets/skintones/eightycloud.png",
+                                          width: MediaQuery.of(context).size.width*0.30,
+                                          height: MediaQuery.of(context).size.height*0.25,
+                                            fit: BoxFit.cover,
+                                        ),
+                                        padding: EdgeInsets.all(8),
+                                      ),
+                                      SizedBox(height: 2,),
+                                      Text('>80%',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14),textAlign: TextAlign.center,),
+                                      SizedBox(height: 2,),
+                                      Text('Cloud Coverage',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),textAlign: TextAlign.center,),
+                                    ],
+                                  ),
+
+                                ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Column(
+                                    children: <Widget>[
+                                      RawMaterialButton(
+                                        onPressed: () {
+                                          selected = "3";
+                                          setState((){});
+                                        }, //do your action
+                                        elevation: 1.0,
+                                        constraints: BoxConstraints(), //removes empty spaces around of icon
+                                        shape: RoundedRectangleBorder(), //circular button
+                                        fillColor: Colors.white, //background color
+                                        splashColor: Colors.amber,
+                                        highlightColor: Colors.amber,
+                                        child: Image.asset(
+                                          "assets/skintones/ninetycloud.png",
+                                          width: MediaQuery.of(context).size.width*0.3,
+                                          height: MediaQuery.of(context).size.height*0.25,
+                                            fit: BoxFit.cover,
+                                        ),
+                                        padding: EdgeInsets.all(8),
+                                      ),
+                                      SizedBox(height: 2,),
+                                      Text('> 90%',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14),textAlign: TextAlign.center,),
+                                      SizedBox(height: 2,),
+                                      Text('Cloud Coverage',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),textAlign: TextAlign.center,),
+                                    ],
+                                  ),
+
+                                  Spacer(),
+                                  Column(
+                                    children: <Widget>[
+                                      RawMaterialButton(
+                                        onPressed: () {
+                                          selected = "4";
+                                          setState((){});
+                                        }, //do your action
+                                        elevation: 1.0,
+                                        constraints: BoxConstraints(), //removes empty spaces around of icon
+                                        shape: RoundedRectangleBorder(), //circular button
+                                        fillColor: Colors.white, //background color
+                                        splashColor: Colors.amber,
+                                        highlightColor: Colors.amber,
+                                        child: Image.asset(
+                                          "assets/skintones/cloudy.png",
+                                          width: MediaQuery.of(context).size.width*0.3,
+                                          height: MediaQuery.of(context).size.height*0.25,
+                                            fit: BoxFit.cover,
+                                        ),
+                                        padding: EdgeInsets.all(8),
+                                      ),
+                                      SizedBox(height: 2,),
+                                      Text('100 %',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14),textAlign: TextAlign.center,),
+                                      SizedBox(height: 2,),
+                                      Text('Cloud Coverage',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),textAlign: TextAlign.center,),
+                                    ],
+                                  ),
+
+                                ],
+                              ),
+
+                            ],
+                          ),
+                        ),
+                        // Row(
+                        //   children: <Widget>[
+                        //     Text('Type '+'$selected', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                        //     Spacer(),
+                        //     RaisedButton(
+                        //       color: Colors.white,
+                        //       onPressed: (){
+                        //         Navigator.of(context).pop();
+                        //       },
+                        //       child: Text('OK',style: TextStyle(
+                        //         fontSize: 16,
+                        //         fontWeight: FontWeight.bold,
+                        //         fontStyle: FontStyle.italic,
+                        //       ),),
+                        //     ),
+                        //   ],
+                        // )
+                      ],
+                    ));
+              });
+
+        });
   }
 }
 

@@ -1,5 +1,9 @@
 import 'dart:async';
 
+import 'package:background_flutter_latest/screens/HealthTrackReports.dart';
+import 'package:background_flutter_latest/screens/TestReports.dart';
+import 'package:background_flutter_latest/screens/main_drawer.dart';
+import 'package:background_flutter_latest/screens/my_bottom_nav_bar.dart';
 import 'package:background_flutter_latest/screens/profile1.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -59,33 +63,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
       // })
     });
     return Scaffold(
+      drawer: MainDrawer(),
+        bottomNavigationBar: MyBottomNavBar(),
         body: SafeArea(
           child: Column(
 
             children: [
+
               Container(
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: NetworkImage(
-                            "https://firebasestorage.googleapis.com/v0/b/instaapp-4f781.appspot.com/o/back1.jfif?alt=media&token=013b72bf-fc98-42ca-bbc5-2033dd1a3aec"
-                        ),
-                        fit: BoxFit.cover
-                    )
-                ),
-                child: Container(
-                  width: double.infinity,
-                  height: 200,
-                  child: Container(
-                    alignment: Alignment(0.0,2.5),
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage('https://firebasestorage.googleapis.com/v0/b/loginpage-5c70d.appspot.com/o/logo%202.png?alt=media&token=3880bcfe-3fc0-4ff9-aad9-aeb4f0b81980'),
-                      radius: 60.0,
-                    ),
-                  ),
-                ),
+                width: double.infinity,
+                height: 300,
+                child: Image(image: AssetImage('assets/skintones/testimageforprofile1.png'),fit: BoxFit.fill,),
+                // child: Container(
+                //   width: double.infinity,
+                //   height: 200,
+                //   child: Container(
+                //     alignment: Alignment(0.0,2.5),
+                //     child: CircleAvatar(
+                //       backgroundImage: NetworkImage('https://firebasestorage.googleapis.com/v0/b/loginpage-5c70d.appspot.com/o/opaque%20new%20logo%20png.png?alt=media&token=c8210da2-b911-44a9-bcef-d2ba61904d9d'),
+                //       radius: 60.0,
+                //     ),
+                //   ),
+                // ),
               ),
               SizedBox(
-                height: 60,
+                height: 30,
               ),
               Text(
                 '$name'
@@ -135,11 +137,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Card(
                   margin: EdgeInsets.symmetric(horizontal: 20.0,vertical: 8.0),
                   elevation: 2.0,
+                  color: Color(0xffe11e2b),
                   child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 12,horizontal: 30),
                       child: Text("Edit Profile",style: TextStyle(
                           letterSpacing: 2.0,
-                          fontWeight: FontWeight.w300
+                          fontWeight: FontWeight.w300,
+                        color: Colors.white,
                       ),),)
               ),),
               SizedBox(
@@ -207,7 +211,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             SizedBox(
                               height: 7,
                             ),
-                            Text("2000",
+                            Text("0 ng/ml",
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 22.0,
@@ -228,6 +232,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   RaisedButton(
                     onPressed: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ShowMoreCards(),
+                        ),
+                      );
                     },
                     shape:  RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(80.0),
@@ -258,6 +268,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   RaisedButton(
                     onPressed: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ShowMoreCards1(),
+                        ),
+                      );
                       // Navigator.push(
                       //   context,
                       //   MaterialPageRoute(

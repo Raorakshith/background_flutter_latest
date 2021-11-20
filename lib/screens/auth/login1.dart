@@ -19,14 +19,10 @@ class _LoginScreen1State extends State<LoginScreen1> {
             maxWidth: MediaQuery.of(context).size.width,
           ),
           decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-              Colors.blue[800],
-              Colors.blue[600],
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.centerRight,
+            color: Color(0xffe11e2b),
+
             ),
-          ),
+
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,7 +39,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
                           width: 150,
                           height: 150,
                           margin: EdgeInsets.only(top: 40,bottom: 10,left: MediaQuery.of(context).size.width/4),
-                          child: SvgPicture.asset('assets/vitamin d logo in svg_new.svg'),
+                          child: Image.asset('assets/skintones/vitamindlogo.png'),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             // image: DecorationImage(image: NetworkImage('https://firebasestorage.googleapis.com/v0/b/loginpage-5c70d.appspot.com/o/logo%202.png?alt=media&token=3880bcfe-3fc0-4ff9-aad9-aeb4f0b81980'),
@@ -121,7 +117,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
                           margin: EdgeInsets.all(10),
                           width: double.infinity,
                           child: FlatButton(
-                            color: Colors.blue,
+                            color: Color(0xffe11e2b),
                             onPressed: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => OTPScreen(_controller.text)));
