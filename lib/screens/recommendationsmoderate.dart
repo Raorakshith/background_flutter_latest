@@ -156,7 +156,7 @@ class _RecommendState extends State<RecommendModerate> {
                                       fontSize: 17.0,
                                       fontWeight: FontWeight.bold
                                   )),
-                              Text(vitamind+' mcg',
+                              Text(vitamind+' mcg/100g',
                                   style: TextStyle(
                                       fontSize: 15.0,
                                       color: Colors.grey

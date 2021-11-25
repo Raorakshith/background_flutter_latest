@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:background_flutter_latest/screens/auth/auth.dart';
 import 'package:background_flutter_latest/screens/auth/login1.dart';
 import 'package:background_flutter_latest/screens/bottom_nav_screen.dart';
@@ -12,6 +14,7 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var newuser;
     final user = context.watchSignedInUser();
     user.map(
           (value) {
@@ -23,11 +26,13 @@ class SplashScreen extends StatelessWidget {
       initializing: (_) {},
     );
 
+
+
     return Scaffold(
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        child: SvgPicture.asset('assets/vitamin d logo in svg_new.svg'),
+        child: Image.asset('assets/skintones/logonewiot.png',fit: BoxFit.cover,),
 
       ),
     );

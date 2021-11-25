@@ -35,7 +35,8 @@ class _CompareState extends State<Compare> {
   List<SunData> sunlightDataList = [];
   List<UVdata> uvdata = [];
   List<UVdatalist> uvdatalist = [];
-  List<String> time = ['12-1','1-2','2-3','3-4','4-5','5-6','6-7','7-8','8-9','9-10','10-11','11-12'];
+  bool _isvisible = true;
+  List<String> time = ['12:00-01:00','01:00-02:00','02:00-03:00','03:00-04:00','04:00-05:00','05:00-06:00','06:00-07:00','07:00-08:00','08:00-09:00','09:00-10:00','10:00-11:00','11:00-12:00'];
 
   final exposuretime = TextEditingController();
   final exposureduration = TextEditingController();
@@ -47,7 +48,7 @@ class _CompareState extends State<Compare> {
   final referenceDatabase2 = FirebaseDatabase.instance.reference().child("VitaminD Exposure");
   final reference4 = FirebaseDatabase.instance.reference().child("UVSunData");
   final reference14 = FirebaseDatabase.instance.reference().child("User Data").child(FirebaseAuth.instance.currentUser.uid).child("Track Reports");
-var selected, selectedtime;
+var selected="AM", selectedtime="AM";
   Position _position;
   StreamSubscription<Position> _subscription;
   Address _address;
@@ -56,6 +57,10 @@ var selected, selectedtime;
   String lat,long,addressesdes;
   TextEditingController _textFieldController = TextEditingController();
   String _selectedTime,_selectedTime1;
+  var selecteditem;
+  var min1,min2,min3,min4,min5,min6;
+  var selecteduv;
+  BuildContext duratincontxt;
 
 
   // We don't need to pass a context to the _show() function
@@ -155,7 +160,7 @@ var selected, selectedtime;
                             return null;
                           },
                           decoration: InputDecoration(
-                            labelText: 'Sunlight Exposure Start Time',
+                            labelText: 'Exposure Time',
                             hintText: 'Enter Time (AM/PM)',
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0)
@@ -163,7 +168,7 @@ var selected, selectedtime;
                           ),
                         ),
                       ),
-                      Icon(Icons.wifi_protected_setup),
+                      // Icon(Icons.wifi_protected_setup),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
@@ -176,7 +181,7 @@ var selected, selectedtime;
                             return null;
                           },
                           decoration: InputDecoration(
-                            labelText: 'Sunlight Exposure End Time',
+                            labelText: 'Cloud Coverage',
                             hintText: 'Enter Time',
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0)
@@ -216,6 +221,9 @@ var selected, selectedtime;
                                   heroTag: 'btn1',
                                   child: Icon(Icons.autorenew),
                                   onPressed:() {
+                                    setState((){
+                                      textHolder = selecteduv;
+                                    });
                                     // final startTime = DateTime(10, 30);
                                     // final currentTime = DateTime.now();
                                     //
@@ -224,18 +232,18 @@ var selected, selectedtime;
                                     // final diff_mn = currentTime.difference(startTime).inMinutes;
                                     // final diff_sc = currentTime.difference(startTime).inSeconds;
                                     //print(currentTime.hour);
-                                    for (int i = 0; i < uvdata.length; i++) {
-                                      print(uvdata[i].time.substring(0, 2));
-                                      if (uvdata[i].time.substring(0, 2)
-                                          .contains(
-                                          _selectedTime1.substring(0, 2))) {
-                                        print("entered");
-                                        setState(() {
-                                          textHolder = uvdata[i].uvindex;
-                                        });
-                                        print(uvdata[i].uvindex);
-                                      }
-                                    }
+                                    // for (int i = 0; i < uvdata.length; i++) {
+                                    //   print(uvdata[i].time.substring(0, 2));
+                                    //   if (uvdata[i].time.substring(0, 2)
+                                    //       .contains(
+                                    //       _selectedTime1.substring(0, 2))) {
+                                    //     print("entered");
+                                    //     setState(() {
+                                    //       textHolder = uvdata[i].uvindex;
+                                    //     });
+                                    //     print(uvdata[i].uvindex);
+                                    //   }
+                                    // }
                                   }
                                     // print(diff_dy);
                                     // print(diff_hr);
@@ -258,19 +266,19 @@ var selected, selectedtime;
                       child: new Text('ADD ROUTINE'),
                       onPressed: () {
                         String expdut;
-                        var format = DateFormat("HH:mm");
-                        var one = format.parse(_selectedTime);
-                        var two = format.parse(_selectedTime1);
+                        // var format = DateFormat("HH:mm");
+                        // var one = format.parse(_selectedTime);
+                        // var two = format.parse(_selectedTime1);
                         var key = reference1.push().key;
-                        String durationexp = "${two.difference(one).inMinutes}";
-                        print("${two.difference(one).inMinutes}");
+                        // String durationexp = "${two.difference(one).inMinutes}";
+                        // print("${two.difference(one).inMinutes}");
                         referenceDatabase2.child(skintype).child(textHolder.substring(0,1)).once().then((DataSnapshot data){
-                           expdut = (double.parse(data.value)*double.parse(durationexp)).toStringAsFixed(2);
+                           expdut = (double.parse(data.value)*double.parse(min1)).toStringAsFixed(2);
                           // totals = comvalue+count;
                           // result = totals.toStringAsFixed(2);
                           Fluttertoast.showToast(msg: (data.value)+count.toString(),toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM ,backgroundColor: Colors.grey,textColor: Colors.white);
                         }).whenComplete(() => {
-                        reference1.child(key).set({'starttime':_selectedTime,'endtime':_selectedTime1,'uvindex':textHolder,'exposureduration':durationexp, 'exposurevalue':expdut,'id':key}).whenComplete(() async{
+                        reference1.child(key).set({'starttime':_selectedTime1,'endtime':_selectedTime1,'uvindex':textHolder,'exposureduration':min1, 'exposurevalue':expdut,'id':key}).whenComplete(() async{
                         await Fluttertoast.showToast(msg: "Added data"+exposuretime.value.toString(),toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM ,backgroundColor: Colors.grey,textColor: Colors.white);
                         //Navigator.push(context, MaterialPageRoute(builder: (context) => Profile2()));
                         Navigator.of(context).pop();
@@ -377,16 +385,16 @@ var selected, selectedtime;
     return Scaffold(
 
       appBar: new AppBar(
-        title: new Text("Comparison"),
+        title: new Text("Evaluation"),
         centerTitle: true,
       ),
         drawer: MainDrawer(),
     bottomNavigationBar: MyBottomNavBar(),
     body:SingleChildScrollView(
-    padding: EdgeInsets.symmetric(
-    vertical: 10.0,
-    horizontal: 10.0,
-    ),
+    // padding: EdgeInsets.symmetric(
+    // vertical: 10.0,
+    // horizontal: 10.0,
+    // ),
     child: Column(
      children:<Widget>[
        // Padding(
@@ -397,46 +405,110 @@ var selected, selectedtime;
        //     trailing: Text('$temp'),
        //   ),
        // ),
-
        Container(
-         child: Center(
-           child: Text(
-             'FOOD TRACK DATA',
-             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-           ),
+         decoration: BoxDecoration(
+           gradient: LinearGradient(
+             colors: [
+               const Color(0xFF00A8D5),
+               const Color(0xFFFFFFFF),
+             ],),
+             // image: DecorationImage(image: AssetImage('assets/skintones/gradientforfood1.png'),fit: BoxFit.cover)
          ),
-       ),
-       Padding(padding: EdgeInsets.all(5.0),
-         child: Row(
-           children: <Widget>[
-             Text(
-               'Food',
-               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+         child: Column(
+           children: [
+             Container(
+               // decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/skintones/gradientforfood1.png'),fit: BoxFit.cover)),
+
+               // decoration: BoxDecoration(
+               //   image:DecorationImage(image: AssetImage("assets/skintones/gradient for food 1.png"))
+               // ),
+               child: Center(
+                 child: Text(
+                   'FOOD TRACK DATA',
+                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                 ),
+               ),
              ),
-             Spacer(),
-             Padding(
-                 padding: EdgeInsets.only(left: 10),
-             child: Text(
-               'Intake(in g)',
-               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+             Padding(padding: EdgeInsets.all(5.0),
+               child: Row(
+                 children: <Widget>[
+                   Text(
+                     'Food',
+                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                   ),
+                   Spacer(),
+                   Padding(
+                     padding: EdgeInsets.only(left: 10),
+                     child: Text(
+                       'Intake(in g)',
+                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                     ),
+                   ),
+                   Spacer(),
+                   Text(
+                     'Vitamin D(in mcg)',
+                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                   )
+                 ],
+               ),),
+             new Container(
+               height: 150,
+               child: postsList.length == 0 ? new Text("No Items Added") : new ListView.builder(
+                   itemCount: postsList.length,
+                   itemBuilder: (_, index){
+                     return PostsUI(postsList[index].code, postsList[index].item,postsList[index].vitd,postsList[index].quantity);
+                   }
+               ),
              ),
-             ),
-             Spacer(),
-             Text(
-               'Vitamin D(in mcg)',
-               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+             // Padding(
+             //   padding: const EdgeInsets.all(8.0),
+             //   child: Center(
+             //     child: RaisedButton(
+             //       child: Center(
+             //         child: ListTile(
+             //           leading: FaIcon(FontAwesomeIcons.upload),
+             //           title: Text('Add Items'),
+             //         ),
+             //       ),
+             //       color: Color(0xFF00A8D5),
+             //       textColor: Colors.black,
+             //       splashColor: Colors.black12,
+             //       padding: EdgeInsets.all(3.0),
+             //       onPressed: (){
+             //         Navigator.push(context, MaterialPageRoute(builder: (context) => FoodData()));
+             //       },
+             //     ),
+             //   ),
+             // ),
+             Row(
+               children: [
+                 Spacer(),
+                 Container(
+
+                   width: MediaQuery.of(context).size.width*0.4,
+                   height: 60,
+                   child: RaisedButton(
+                     child: Center(
+                       child: ListTile(
+                         leading: FaIcon(FontAwesomeIcons.upload,color: Colors.white,size: 20,),
+                         title: Text('Add',style: TextStyle(fontSize: 16,color: Colors.white, fontWeight: FontWeight.bold),),
+                       ),
+                     ),
+                     color: Colors.lightBlueAccent,
+                     textColor: Colors.white,
+                     splashColor: Colors.deepOrange,
+                     padding: EdgeInsets.all(8.0),
+                     onPressed: (){
+                       Navigator.push(context, MaterialPageRoute(builder: (context) => FoodData()));
+                     },
+                   ),
+                 ),
+               ],
              )
            ],
-         ),),
-       new Container(
-         height: 150,
-         child: postsList.length == 0 ? new Text("No Items Added") : new ListView.builder(
-             itemCount: postsList.length,
-             itemBuilder: (_, index){
-               return PostsUI(postsList[index].code, postsList[index].item,postsList[index].vitd,postsList[index].quantity);
-             }
          ),
        ),
+
        // Padding(
        //   padding: const EdgeInsets.all(8.0),
        //   child: TextFormField(
@@ -475,26 +547,40 @@ var selected, selectedtime;
        //     ),
        //   ),
        // ),
-       Padding(
-         padding: const EdgeInsets.all(8.0),
-         child: Center(
-           child: RaisedButton(
-             child: Center(
-               child: ListTile(
-                 leading: FaIcon(FontAwesomeIcons.upload),
-                 title: Text('Add Items'),
-               ),
-             ),
-             color: Colors.green,
-             textColor: Colors.black,
-             splashColor: Colors.black12,
-             padding: EdgeInsets.all(3.0),
-             onPressed: (){
-               Navigator.push(context, MaterialPageRoute(builder: (context) => FoodData()));
-             },
-           ),
-         ),
-       ),
+       // Padding(
+       //   padding: const EdgeInsets.all(8.0),
+       //   child: Center(
+       //     child: RaisedButton(
+       //       child: Center(
+       //         child: ListTile(
+       //           leading: FaIcon(FontAwesomeIcons.upload),
+       //           title: Text('Add Items'),
+       //         ),
+       //       ),
+       //       color: Colors.green,
+       //       textColor: Colors.black,
+       //       splashColor: Colors.black12,
+       //       padding: EdgeInsets.all(3.0),
+       //       onPressed: (){
+       //         Navigator.push(context, MaterialPageRoute(builder: (context) => FoodData()));
+       //       },
+       //     ),
+       //   ),
+       // ),
+       // Divider(
+       //   color: Colors.redAccent,
+       // ),
+    Container(
+    decoration: BoxDecoration(
+    gradient: LinearGradient(
+    colors: [
+    const Color(0xFFF2A580),
+    const Color(0xFFFBE1D5),
+    ],),
+        //image: DecorationImage(image: AssetImage('assets/skintones/gradientforsun1.png'),fit: BoxFit.cover)
+    ),
+    child: Column(
+    children: [
        Container(
          child: Center(
            child: Text(
@@ -532,26 +618,40 @@ var selected, selectedtime;
              }
          ),
        ),
-       Padding(
-         padding: const EdgeInsets.all(8.0),
-         child: Center(
-           child: RaisedButton(
-             child: Center(
-               child: ListTile(
-                 leading: FaIcon(FontAwesomeIcons.upload),
-                 title: Text('Enter Data Manually'),
+       // Padding(
+       //   padding: const EdgeInsets.all(8.0),
+
+          Row(
+           children: [
+             Spacer(),
+             Container(
+
+               width: MediaQuery.of(context).size.width*0.4,
+               height: 60,
+               child: RaisedButton(
+                 child: Center(
+                   child: ListTile(
+                     leading: FaIcon(FontAwesomeIcons.upload,color: Colors.white,size: 20,),
+                     title: Text('Add',style: TextStyle(fontSize: 16,color: Colors.white, fontWeight: FontWeight.bold),),
+                   ),
+                 ),
+                 color: Colors.orange,
+                 textColor: Colors.white,
+                 splashColor: Colors.deepOrange,
+                 padding: EdgeInsets.all(8.0),
+                 onPressed: (){
+                   setState(() {
+                     min1 = "";
+                     _isvisible = !_isvisible;
+                   });
+                   _displayDialogForTime(context);
+                 },
                ),
              ),
-             color: Colors.yellow,
-             textColor: Colors.white,
-             splashColor: Colors.deepOrange,
-             padding: EdgeInsets.all(8.0),
-             onPressed: (){
-               _displayDialog(context);
-             },
-           ),
-         ),
-       ),
+           ],
+         )
+
+  ])),
        Padding(
          padding: const EdgeInsets.all(8.0),
          child: Center(
@@ -917,16 +1017,16 @@ var selected, selectedtime;
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
 
+            // new Text(
+            //   starttime,
+            //   style: Theme.of(context).textTheme.bodyText1,
+            //   textAlign: TextAlign.center,
+            // ),
+            // Padding(padding: EdgeInsets.only(left: 3.0,right: 3.0),
+            // child:Icon(Icons.wifi_protected_setup,size: 16.0,),
+            //     ),
             new Text(
-              starttime,
-              style: Theme.of(context).textTheme.bodyText1,
-              textAlign: TextAlign.center,
-            ),
-            Padding(padding: EdgeInsets.only(left: 3.0,right: 3.0),
-            child:Icon(Icons.wifi_protected_setup,size: 16.0,),
-                ),
-            new Text(
-              endtime+"("+exposureduration+"min"+")",
+              endtime+"  ("+exposureduration+"min"+")",
               style: Theme.of(context).textTheme.bodyText1,
               textAlign: TextAlign.left,
             ),
@@ -977,7 +1077,7 @@ var selected, selectedtime;
           return StatefulBuilder(
               builder: (context,setState){
                 return AlertDialog(
-                    title: Text('Select Sun Data '),
+                    title: Text('Time of Exposure '),
                     content: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       //position
@@ -998,12 +1098,18 @@ var selected, selectedtime;
                                   Row(
                                     children: <Widget>[
                                       RaisedButton(
-                                        onPressed: (){},
-                                        color: Colors.grey,
+                                        onPressed: (){
+                                          selected = "AM";
+                                          setState((){});
+                                        },
+                                        color: (selected=="AM")?Colors.green:Colors.grey,
                                         child: Text('AM',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),),
                                       RaisedButton(
-                                        onPressed: (){},
-                                        color: Colors.grey,
+                                        onPressed: (){
+                                          selected = "PM";
+                                          setState((){});
+                                        },
+                                        color: (selected=="PM")?Colors.green:Colors.grey,
                                         child: Text('PM',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),)
                                     ],
                                   ),
@@ -1014,7 +1120,52 @@ var selected, selectedtime;
                                   // ),
                                   RaisedButton(
                                     onPressed: () {
-                                      Navigator.pop(context);
+                                      for(int i=0;i<uvdatalist.length;i++){
+                                        if(uvdatalist[i].time.contains(_tempSelectedCities[0])){
+                                          if(selected == "1"){
+                                            selecteduv = uvdatalist[i].clearcloud;
+                                            exposureduration.text = "Clear Sky";
+                                          }else if(selected == "2"){
+                                            selecteduv = uvdatalist[i].cloud80;
+                                            exposureduration.text = "80 % cloud";
+                                          }else if(selected == "3"){
+                                            selecteduv = uvdatalist[i].cloud90;
+                                            exposureduration.text = "90% cloud";
+                                          }else{
+                                            selecteduv = uvdatalist[i].cloud100;
+                                            exposureduration.text = "100% cloud";
+                                          }
+                                          selecteditem = uvdatalist[i];
+                                          _selectedTime1 = _tempSelectedCities[0];
+                                          exposuretime.text = _selectedTime1;
+                                          textHolder = selecteduv;
+                                          setState((){});
+                                          print(selecteditem.cloud80);
+                                          Navigator.pop(context);
+                                          setState((){});
+                                          String expdut;
+                                          // var format = DateFormat("HH:mm");
+                                          // var one = format.parse(_selectedTime);
+                                          // var two = format.parse(_selectedTime1);
+                                          var key = reference1.push().key;
+                                          // String durationexp = "${two.difference(one).inMinutes}";
+                                          // print("${two.difference(one).inMinutes}");
+                                          referenceDatabase2.child(skintype).child(textHolder.substring(0,1)).once().then((DataSnapshot data){
+                                            expdut = (double.parse(data.value)*double.parse(min1)).toStringAsFixed(2);
+                                            // totals = comvalue+count;
+                                            // result = totals.toStringAsFixed(2);
+                                            Fluttertoast.showToast(msg: (data.value)+count.toString(),toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM ,backgroundColor: Colors.grey,textColor: Colors.white);
+                                          }).whenComplete(() => {
+                                            reference1.child(key).set({'starttime':_selectedTime1,'endtime':_selectedTime1,'uvindex':textHolder,'exposureduration':min1, 'exposurevalue':expdut,'id':key}).whenComplete(() async{
+                                              await Fluttertoast.showToast(msg: "Added data"+exposuretime.value.toString(),toastLength: Toast.LENGTH_SHORT,gravity: ToastGravity.BOTTOM ,backgroundColor: Colors.grey,textColor: Colors.white);
+                                              //Navigator.push(context, MaterialPageRoute(builder: (context) => Profile2()));
+                                              Navigator.of(context).pop();
+                                            })
+                                          });
+                                          break;
+                                        }
+                                      }
+
                                     },
                                     color: Color(0xFFfab82b),
                                     child: Text(
@@ -1032,19 +1183,20 @@ var selected, selectedtime;
                                       return Container(
                                         child: CheckboxListTile(
                                             title: Text(cityName),
-                                            value: _tempSelectedCities.contains(cityName),
+                                            value: _tempSelectedCities.contains(cityName+ " "+selected),
                                             onChanged: (bool value) {
                                               if (value) {
-                                                if (!_tempSelectedCities.contains(cityName)) {
+                                                if (!_tempSelectedCities.contains(cityName+" "+selected)) {
                                                   setState(() {
-                                                    _tempSelectedCities.add(cityName);
+                                                    _tempSelectedCities.add(cityName+" "+selected);
+                                                    _displayDialogForDuration(context);
                                                   });
                                                 }
                                               } else {
-                                                if (_tempSelectedCities.contains(cityName)) {
+                                                if (_tempSelectedCities.contains(cityName+" "+selected)) {
                                                   setState(() {
                                                     _tempSelectedCities.removeWhere(
-                                                            (String city) => city == cityName);
+                                                            (String city) => city == (cityName+" "+selected));
                                                   });
                                                 }
                                               }
@@ -1071,7 +1223,7 @@ var selected, selectedtime;
           return StatefulBuilder(
               builder: (context,setState){
                 return AlertDialog(
-                    title: Text('Select Sun Data '),
+                    title: Text('Select Weather Status'),
                     content: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       //position
@@ -1090,7 +1242,12 @@ var selected, selectedtime;
                                       RawMaterialButton(
                                         onPressed: () {
                                           selected = "1";
-                                          setState((){});
+                                          setState((){
+                                            _isvisible = !_isvisible;
+                                          });
+                                          // Navigator.pushAndRemoveUntil(context, MaterialPage, (route) => false)
+                                          Navigator.pop(context);
+                                          Navigator.pop(duratincontxt);
                                         }, //do your action
                                         elevation: 1.0,
                                         constraints: BoxConstraints(), //removes empty spaces around of icon
@@ -1118,7 +1275,11 @@ var selected, selectedtime;
                                       RawMaterialButton(
                                         onPressed: () {
                                           selected = "2";
+                                          _isvisible = !_isvisible;
                                           setState((){});
+                                          Navigator.pop(context);
+                                          Navigator.pop(duratincontxt);
+
                                         }, //do your action
                                         elevation: 1.0,
                                         constraints: BoxConstraints(), //removes empty spaces around of icon
@@ -1150,7 +1311,12 @@ var selected, selectedtime;
                                       RawMaterialButton(
                                         onPressed: () {
                                           selected = "3";
+                                          _isvisible = !_isvisible;
                                           setState((){});
+                                          Navigator.pop(context);
+                                          Navigator.pop(duratincontxt);
+
+                                          // _displayDialogForDuration(context);
                                         }, //do your action
                                         elevation: 1.0,
                                         constraints: BoxConstraints(), //removes empty spaces around of icon
@@ -1159,7 +1325,7 @@ var selected, selectedtime;
                                         splashColor: Colors.amber,
                                         highlightColor: Colors.amber,
                                         child: Image.asset(
-                                          "assets/skintones/ninetycloud.png",
+                                          "assets/skintones/cloud90.png",
                                           width: MediaQuery.of(context).size.width*0.3,
                                           height: MediaQuery.of(context).size.height*0.25,
                                             fit: BoxFit.cover,
@@ -1179,7 +1345,11 @@ var selected, selectedtime;
                                       RawMaterialButton(
                                         onPressed: () {
                                           selected = "4";
+                                          _isvisible = !_isvisible;
                                           setState((){});
+                                          Navigator.pop(context);
+                                          Navigator.pop(duratincontxt);
+
                                         }, //do your action
                                         elevation: 1.0,
                                         constraints: BoxConstraints(), //removes empty spaces around of icon
@@ -1204,6 +1374,195 @@ var selected, selectedtime;
 
                                 ],
                               ),
+
+                            ],
+                          ),
+                        ),
+
+                      ],
+                    ));
+              });
+
+        });
+  }
+  _displayDialogForDuration(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (context,setState){
+                duratincontxt = context;
+                return AlertDialog(
+                    title: Text('Select Time Duration '),
+                    content: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      //position
+                      mainAxisSize: MainAxisSize.min,
+                      // wrap content in flutter
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height*0.7,
+                          child: Column(
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Column(
+                                    children: <Widget>[
+                                      RawMaterialButton(
+                                        onPressed: () {
+                                           min1 = "5";
+                                          setState((){});
+                                          _displayDialogForSkinType(context);
+                                           // Navigator.pop(context);
+
+                                        }, //do your action
+                                        elevation: 1.0,
+                                        constraints: BoxConstraints(), //removes empty spaces around of icon
+                                        shape: RoundedRectangleBorder(), //circular button
+                                        fillColor: min1=="5"?Colors.green:Colors.white, //background color
+                                        splashColor: Colors.amber,
+                                        highlightColor: Colors.amber,
+                                        child: Text(
+                                          "5",
+                                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                        ),
+                                        padding: EdgeInsets.all(8),
+                                      ),
+                                      SizedBox(height: 2,),
+                                      Text('minutes',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14),textAlign: TextAlign.center,),
+
+                                    ],
+                                  ),
+                                  Spacer(),
+                                  Column(
+                                    children: <Widget>[
+                                      RawMaterialButton(
+                                        onPressed: () {
+                                          min1 = "15";
+                                          _displayDialogForSkinType(context);
+                                          // Navigator.pop(context);
+
+                                          setState((){});
+                                          // Navigator.pop(context);
+
+                                        }, //do your action
+                                        elevation: 1.0,
+                                        constraints: BoxConstraints(), //removes empty spaces around of icon
+                                        shape: RoundedRectangleBorder(), //circular button
+                                        fillColor: min1=="15"?Colors.green:Colors.white, //background color
+                                        splashColor: Colors.amber,
+                                        highlightColor: Colors.amber,
+                                        child: Text(
+                                          "15",
+                                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                        ),
+                                        padding: EdgeInsets.all(8),
+                                      ),
+
+                                      SizedBox(height: 2,),
+                                      Text('minutes',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),textAlign: TextAlign.center,),
+                                    ],
+                                  ),
+
+                                ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Column(
+                                    children: <Widget>[
+                                      RawMaterialButton(
+                                        onPressed: () {
+                                          min1 = "30";
+                                          setState((){});
+                                          _displayDialogForSkinType(context);
+                                          // Navigator.pop(context);
+                                        }, //do your action
+                                        elevation: 1.0,
+                                        constraints: BoxConstraints(), //removes empty spaces around of icon
+                                        shape: RoundedRectangleBorder(), //circular button
+                                        fillColor: min1=="30"?Colors.green:Colors.white, //background color
+                                        splashColor: Colors.amber,
+                                        highlightColor: Colors.amber,
+                                        child: Text(
+                                          "30",
+                                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                          ),
+                                        padding: EdgeInsets.all(8),
+                                      ),
+                                      SizedBox(height: 2,),
+                                      Text('minutes',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),textAlign: TextAlign.center,),
+                                    ],
+                                  ),
+                                  Spacer(),
+                                  Column(
+                                    children: <Widget>[
+                                      RawMaterialButton(
+                                        onPressed: () {
+                                          min1 = "45";
+                                          setState((){});
+                                          _displayDialogForSkinType(context);
+                                          // Navigator.pop(context);
+                                        }, //do your action
+                                        elevation: 1.0,
+                                        constraints: BoxConstraints(), //removes empty spaces around of icon
+                                        shape: RoundedRectangleBorder(), //circular button
+                                        fillColor: min1=="45"?Colors.green:Colors.white, //background color
+                                        splashColor: Colors.amber,
+                                        highlightColor: Colors.amber,
+                                        child: Text(
+                                          "45",
+                                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                        ),
+                                        padding: EdgeInsets.all(8),
+                                      ),
+
+                                      SizedBox(height: 2,),
+                                      Text('minutes',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),textAlign: TextAlign.center,),
+                                    ],
+                                  ),
+
+                                ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Column(
+                                    children: <Widget>[
+                                      RawMaterialButton(
+                                        onPressed: () {
+                                          min1 = "60";
+                                          setState((){});
+                                          _displayDialogForSkinType(context);
+                                          // Navigator.pop(context);
+                                          }, //do your action
+                                        elevation: 1.0,
+                                        constraints: BoxConstraints(), //removes empty spaces around of icon
+                                        shape: RoundedRectangleBorder(), //circular button
+                                        fillColor: min1=="60"?Colors.green:Colors.white, //background color
+                                        splashColor: Colors.amber,
+                                        highlightColor: Colors.amber,
+                                        child: Text(
+                                          "60",
+                                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                        ),
+                                        padding: EdgeInsets.all(8),
+                                      ),
+                                      SizedBox(height: 2,),
+                                      Text('minutes',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10),textAlign: TextAlign.center,),
+                                    ],
+                                  ),
+
+                                ],
+                              ),
+                              SizedBox(height: 10,),
+                              Visibility(
+                                visible: false,
+                                  child: RaisedButton(onPressed: (){
+                                Navigator.pop(context);
+                              },
+                                child: Text('Done',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),),
+                                color: Colors.redAccent,
+                              ))
 
                             ],
                           ),

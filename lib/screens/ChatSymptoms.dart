@@ -76,11 +76,21 @@ class _ChatSymptomsState extends State<ChatSymptoms> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ask Symptoms'),
+        title: Text('Symptoms Assessment'),
         centerTitle: true,
       ),
       bottomNavigationBar: MyBottomNavBar(),
       body:SingleChildScrollView(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                const Color(0xFF00A8D5),
+                const Color(0xFFFFFFFF),
+
+              ],),),
         child:
       Column(
         children:<Widget>[
@@ -196,7 +206,7 @@ class _ChatSymptomsState extends State<ChatSymptoms> {
             ],
           )
       ]
-      ),
+      ),),
       // body: Container(
       //   height: MediaQuery.of(context).size.height,
       //   child: chatlist.length == 0 ? new Text("No Items Added") : new ListView.builder(

@@ -85,12 +85,22 @@ class _Profile1State extends State<Profile1> {
       ),
       drawer: MainDrawer(),
       body:SingleChildScrollView(
-        padding: EdgeInsets.symmetric(
-          vertical: 10.0,
-          horizontal: 10.0,
-        ),
+        // padding: EdgeInsets.symmetric(
+        //   vertical: 10.0,
+        //   horizontal: 10.0,
+        // ),
 
-        child: Form(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          decoration: BoxDecoration(
+    gradient: LinearGradient(
+    colors: [
+    const Color(0xFF00A8D5),
+    const Color(0xFFFFFFFF),
+    ],),
+    // image: DecorationImage(image: AssetImage('assets/skintones/gradientforfood1.png'),fit: BoxFit.cover)
+    ),
+    child:Form(
           key: formkey,
           child: Column(
             children: <Widget>[
@@ -364,7 +374,7 @@ class _Profile1State extends State<Profile1> {
           ),
         ),
       ),
-
+      ),
 
     );
   }

@@ -36,7 +36,8 @@ String _messageBuffer = '';
 BluetoothDevice _device;
 bool isDisconnecting = false;
 bool _connected = false;
-String textHolder = '0';
+String textHolder = "0.0 ng/ml ";
+String textholdgauge = "";
 bool _isButtonUnavailable = false;
 bool _didmanual = false;
 var voltage ="";
@@ -60,6 +61,7 @@ final reference1 = FirebaseDatabase.instance.reference().child("User Data").chil
   void initState() {
     // TODO: implement initState
     super.initState();
+    print("conca"+textHolder.replaceAll("ng/ml", "").replaceAll(">", ""));
     FlutterBluetoothSerial.instance.state.then((state){
       setState(() {
         _bluetoothState = state;
@@ -108,7 +110,7 @@ List<DropdownMenuItem<BluetoothDevice>> _getDeviceItems(){
   }else{
     _devicesList.forEach((device){
       items.add(DropdownMenuItem(
-        child: Text(device.name),
+        child: Text(device.name=="HC-05"?"VitaD":device.name),
         value: device,
       ));
     });
@@ -297,12 +299,21 @@ void _onDataReceived(Uint8List data) {
   if (~index != 0) { // \r\n
     setState(() {
       String received_data = _messageBuffer + dataString.substring(0, index);
-      received_data = received_data.trim();
-        print(received_data);
-        reference.push().set(received_data);
+      received_data = received_data.trim()..replaceAll(",", "");
+      setState(() {
+
+      });
+        // reference.push().set(received_data);
         // show(received_data);
-        bluetoothrecieveddata.add(received_data);
-        voltage = received_data;
+
+        bluetoothrecieveddata.add( received_data);
+        // textHolder = bluetoothrecieveddata[0].toString().split(',').first;
+        textHolder = bluetoothrecieveddata[0].toString().substring(0, bluetoothrecieveddata[0].toString().indexOf(','));
+        // textholdgauge = textHolder.replaceAll("ng/ml", "");
+
+      // bluetoothrecieveddata.add(received_data.split(',').last);
+
+      voltage = received_data;
 //        print(received_data.substring(0, 4));
       // print(received_data.length);
 
@@ -317,7 +328,7 @@ void _onDataReceived(Uint8List data) {
             : _messageBuffer
             + dataString
     );
-    print(_messageBuffer);
+    // print("gf"+_messageBuffer);
   }
 }
 void _disconnect() async{
@@ -345,10 +356,15 @@ void _disconnect() async{
       drawer: MainDrawer(),
       bottomNavigationBar: MyBottomNavBar(),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(
-          vertical: 10.0,
-          horizontal: 10.0,
-        ),
+
+        child: Container(
+    decoration: BoxDecoration(
+    gradient: LinearGradient(
+    colors: [
+      const Color(0xFF00A8D5),
+    const Color(0xFFFFFFFF),
+
+    ],),),
         child: Column(
           children:<Widget> [
             Row(
@@ -486,7 +502,8 @@ void _disconnect() async{
 
             FlutterGauge(
                 handSize: 25,
-                index:double.parse('$textHolder'),
+                index: 10,
+                // index:double.parse('$textHolder'.replaceAll("ng/ml", "").replaceAll(">","")),
                 end: 50,
                 number: Number.endAndCenterAndStart,
                 circleColor: Color(0xFF47505F),
@@ -513,7 +530,7 @@ void _disconnect() async{
                 padding: const EdgeInsets.all(8.0),
                 child: new Row(
                   children: [
-                    Text('$textHolder'+" ng/ml",
+                    Text('$textHolder',
                       style: TextStyle(fontSize: 20),),
                     Spacer(),
                     Container(
@@ -679,7 +696,7 @@ void _disconnect() async{
 
             Container(
               padding: EdgeInsets.only(left: 20.0),
-              height: 150,
+              height: 100,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: bluetoothrecieveddata.length,
@@ -689,21 +706,28 @@ void _disconnect() async{
               ),
 
             ),
-             RaisedButton(
-              color: Colors.grey,
-              onPressed:(){
-                bluetoothrecieveddata.clear();
-                setState(() {
+             Row(
+               children: [
+                 Spacer(),
+                 RaisedButton(
+                   color: Colors.grey,
+                   onPressed:(){
+                     bluetoothrecieveddata.clear();
+                     textHolder = '0.0 ng/ml';
+                     setState(() {
 
-                });
+                     });
 
-              },
-              child: Text('Clear Values',style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                fontStyle: FontStyle.normal,
-              ),),
-            ),
+                   },
+                   child: Text('Clear Values',style: TextStyle(
+                     fontSize: 14,
+                     fontWeight: FontWeight.bold,
+                     fontStyle: FontStyle.normal,
+                   ),),
+                 ),
+               ],
+             )
+
             // Padding(
             //     padding: const EdgeInsets.all(8.0),
             //     child: new Row(
@@ -783,6 +807,7 @@ void _disconnect() async{
           //
           ],
         ),
+      ),
       ),
 
     );

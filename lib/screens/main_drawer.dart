@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:background_flutter_latest/screens/FoodData.dart';
 import 'package:background_flutter_latest/screens/ProfileScreen.dart';
+import 'package:background_flutter_latest/screens/TinderLikeSwipe.dart';
 import 'package:background_flutter_latest/screens/asksymptoms.dart';
 import 'package:background_flutter_latest/screens/bluetooth.dart';
 import 'package:background_flutter_latest/screens/profile1.dart';
@@ -33,7 +34,7 @@ String imageUrl, username, userdata;
           Container(
             width: double.infinity,
             padding: EdgeInsets.all(20),
-            color: Color(0xffe11e2b),
+            color: Colors.white,
             child: Center(
               child: Column(
                 children: <Widget>[
@@ -41,18 +42,18 @@ String imageUrl, username, userdata;
                     width: 120,
                     height: 120,
                     margin: EdgeInsets.only(top: 30,bottom: 10),
-                    child: Image.asset('assets/skintones/vitamindlogo.png'),
+                    child: Image.asset('assets/skintones/lg1.jpg'),
                     //child: SvgPicture.asset('assets/vitamin d logo in svg_new.svg'),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Color(0xffe11e2b),
+                      color: Colors.white,
 
                       //
                     ),
                   ),
-                  Text('$username',style: TextStyle(
+                  Text('VitaD',style: TextStyle(
                     fontSize: 22,
-                    color: Colors.white,
+                    color: Colors.deepOrange,
                   ),
                   ),
 
@@ -60,92 +61,124 @@ String imageUrl, username, userdata;
               ),
             ),
           ),
-          ListTile(
-            leading: Icon(Icons.home),
-            title: Text(
-              'Home',
-              style: TextStyle(
-                fontSize: 18,
-              ),
-            ),
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavScreen()));
-            },
+          Divider(
+            thickness: 20,
+            color: Colors.deepOrange,
           ),
-          ListTile(
-            leading: Icon(Icons.person),
-            title: Text(
-              'Profile',
-              style: TextStyle(
-                fontSize: 18,
-              ),
-            ),
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen()));
-            },
+        Container(
+          height: MediaQuery.of(context).size.height,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                const Color(0xFF00A8D5),
+                const Color(0xFFFFFFFF),
+              ],),
+            // image: DecorationImage(image: AssetImage('assets/skintones/gradientforfood1.png'),fit: BoxFit.cover)
           ),
-          ListTile(
-            leading: Icon(Icons.bluetooth_connected_rounded),
-            title: Text(
-              'Connect Device',
-              style: TextStyle(
-                fontSize: 18,
+          child: Column(
+            children: [
+              ListTile(
+                leading: Icon(Icons.home),
+                title: Text(
+                  'Home',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavScreen()));
+                },
               ),
-            ),
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => BluetoothStates()));
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.assignment_ind_rounded),
-            title: Text(
-              'Assess Yourself',
-              style: TextStyle(
-                fontSize: 18,
+              ListTile(
+                leading: Icon(Icons.person),
+                title: Text(
+                  'Profile',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen()));
+                },
               ),
-            ),
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => AskSymptoms()));
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.assignment_ind_rounded),
-            title: Text(
-              'Food Chart',
-              style: TextStyle(
-                fontSize: 18,
+              ListTile(
+                leading: Icon(Icons.bluetooth_connected_rounded),
+                title: Text(
+                  'Connect Device',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => BluetoothStates()));
+                },
               ),
-            ),
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => FoodData()));
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.logout),
-            title: Text(
-              'LogOut',
-              style: TextStyle(
-                fontSize: 18,
+              ListTile(
+                leading: Icon(Icons.assignment_ind_rounded),
+                title: Text(
+                  'Assess Yourself',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SwipeSymptomsCard()));
+                },
               ),
-            ),
-            onTap: (){
-             // Navigator.push(context, MaterialPageRoute(builder: (context) => Recommend()));
-              _signOut();
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.logout),
-            title: Text(
-              'Check UV Data',
-              style: TextStyle(
-                fontSize: 18,
+              ListTile(
+                leading: Icon(Icons.assignment_ind_rounded),
+                title: Text(
+                  'Food Chart',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => FoodData()));
+                },
               ),
-            ),
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ShowCapturedUVdata()));
-              // _signOut();
-            },
-          ),
+              ListTile(
+                leading: Icon(Icons.assignment_ind_rounded),
+                title: Text(
+                  'Terms and conditions',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                onTap: (){
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => FoodData()));
+                },
+              ),
+            ],
+          )
+        ),
+
+          // ListTile(
+          //   leading: Icon(Icons.logout),
+          //   title: Text(
+          //     'LogOut',
+          //     style: TextStyle(
+          //       fontSize: 18,
+          //     ),
+          //   ),
+          //   onTap: (){
+          //    Navigator.push(context, MaterialPageRoute(builder: (context) => SwipeSymptomsCard()));
+          //    //  _signOut();
+          //   },
+          // ),
+          // ListTile(
+          //   leading: Icon(Icons.logout),
+          //   title: Text(
+          //     'Check UV Data',
+          //     style: TextStyle(
+          //       fontSize: 18,
+          //     ),
+          //   ),
+          //   onTap: (){
+          //     Navigator.push(context, MaterialPageRoute(builder: (context) => ShowCapturedUVdata()));
+          //     // _signOut();
+          //   },
+          // ),
         ],
       ),
       ),

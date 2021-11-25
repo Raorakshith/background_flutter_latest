@@ -1,5 +1,6 @@
 
 import 'package:background_flutter_latest/screens/ChatSymptoms.dart';
+import 'package:background_flutter_latest/screens/TinderLikeSwipe.dart';
 import 'package:background_flutter_latest/screens/asksymptoms.dart';
 import 'package:background_flutter_latest/screens/bluetooth.dart';
 import 'package:background_flutter_latest/screens/bottom_nav_screen.dart';
@@ -27,7 +28,11 @@ class MyBottomNavBar extends StatelessWidget {
       ),
       height: 80,
       decoration: BoxDecoration(
-        color: Colors.white,
+        gradient: LinearGradient(
+          colors: [
+            const Color(0xFF00A8D5),
+            const Color(0xFFFFFFFF),
+          ],),
         boxShadow: [
           BoxShadow(
             offset: Offset(0, -10),
@@ -73,7 +78,7 @@ class MyBottomNavBar extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChatSymptoms(),
+                  builder: (context) => SwipeSymptomsCard(),
                 ),
               );
             }, //do your action

@@ -59,13 +59,16 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
                     onPressed: (){
                       if(widget.descriptions.contains("You have sufficient level of Vitamin-D. Follow your diets regularly")) {
                         Navigator.of(context).pop();
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Recommend()));
+                        //Navigator.push(context, MaterialPageRoute(builder: (context) => Recommend()));
                       }else if(widget.descriptions.contains("You have insufficient Vitamin-D. Please go through our suggestions")){
                         Navigator.of(context).pop();
                         Navigator.push(context, MaterialPageRoute(builder: (context) => RecommendModerate()));
                       }else if(widget.descriptions.contains("You have selected some symptoms of Vitamin-D. You can calculate your Vitamin-D and verify for better health")){
                         Navigator.of(context).pop();
                         Navigator.push(context, MaterialPageRoute(builder: (context) => Compare()));
+                      }else if(widget.descriptions.contains('You are moderate deficient in Vitamin-D. Please go through our suggestions')){
+                        Navigator.of(context).pop();
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => RecommendModerate()));
                       }
                       else{
                         Navigator.of(context).pop();

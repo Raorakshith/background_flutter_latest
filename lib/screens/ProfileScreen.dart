@@ -66,14 +66,100 @@ class _ProfileScreenState extends State<ProfileScreen> {
       drawer: MainDrawer(),
         bottomNavigationBar: MyBottomNavBar(),
         body: SafeArea(
-          child: Column(
+          child: Container(
+          decoration: BoxDecoration(
+          gradient: LinearGradient(
+    colors: [
+    const Color(0xFF00A8D5),
+    const Color(0xFFFFFFFF),
+    ],),
+    // image: DecorationImage(image: AssetImage('assets/skintones/gradientforfood1.png'),fit: BoxFit.cover)
+    ),
+    child:Column(
 
             children: [
-
+              SizedBox(height: 30,),
               Container(
                 width: double.infinity,
-                height: 300,
-                child: Image(image: AssetImage('assets/skintones/testimageforprofile1.png'),fit: BoxFit.fill,),
+                height: 250,
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+
+
+                    Column(
+                      children: [
+
+                        Container(
+                          height: 100,
+                          child: Container(
+                            alignment: Alignment(0.0,2.5),
+                            child: Image(
+                              image: NetworkImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjL3aUIZxL34AgyF8KivjO_53hoLZuy31RAA&usqp=CAU'),
+                              width: 100,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20,),
+                        Container(
+                          height: 100,
+                          child: Container(
+                            child: Image(
+                              image: NetworkImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgFLtZ9qBmQadzJXcO9ijHvpZi6kICtKm-JQ&usqp=CAU'),
+                              width: 100,
+                              fit: BoxFit.fitHeight,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                        Spacer(),
+                        Text("4 \nNatural Ways\n to get \n Vitamin D",maxLines: 5,textAlign: TextAlign.center,style: TextStyle(fontSize: 24,color: Colors.purple,fontWeight: FontWeight.bold),),
+                        Spacer(),
+                    Column(
+                      children: [
+                        Container(
+                          height: 100,
+                          child: Container(
+                            child: Image(
+                              image: NetworkImage('https://firebasestorage.googleapis.com/v0/b/loginpage-5c70d.appspot.com/o/Less%20Food%20Recommend%2Fsun.png?alt=media&token=be489e81-e234-4084-8a3d-c01df965880c'),
+                              width: 100,
+                              fit: BoxFit.fitHeight,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20,),
+                        Container(
+                          height: 100,
+                          child: Container(
+                            child: Image(
+                              image: NetworkImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTP_RlKmXkE-C0iemS3hebP8lcpFqIpW9StCw&usqp=CAU'),
+                              width: 100,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                      ],
+                    ),
+
+                    // Container(
+                    //   width: double.infinity,
+                    //   height: 50,
+                    //   child: Container(
+                    //     alignment: Alignment(0.0,2.5),
+                    //     child: CircleAvatar(
+                    //       backgroundImage: NetworkImage('https://firebasestorage.googleapis.com/v0/b/loginpage-5c70d.appspot.com/o/opaque%20new%20logo%20png.png?alt=media&token=c8210da2-b911-44a9-bcef-d2ba61904d9d'),
+                    //       radius: 60.0,
+                    //     ),
+                    //   ),
+                    // ),
+                  ],
+                ),
+                // child: Image(image: AssetImage('assets/skintones/testimageforprofile1.png'),fit: BoxFit.fill,),
                 // child: Container(
                 //   width: double.infinity,
                 //   height: 200,
@@ -211,7 +297,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             SizedBox(
                               height: 7,
                             ),
-                            Text("0 ng/ml",
+                            Text("20 ng/ml",
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 22.0,
@@ -313,5 +399,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
         )
-    );  }
+    ));  }
 }

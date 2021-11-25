@@ -78,12 +78,22 @@ class _FoodDataState extends State<FoodData> {
       ),
       body: foodlist.isEmpty
           ?Center(child: CircularProgressIndicator())
-          :Column(
-        children: [
-          Expanded(child:SingleChildScrollView(child: buildDataTable(),physics: BouncingScrollPhysics(),scrollDirection: Axis.vertical,)) ,
-          buildSubmit(),
-        ],
-      ),
+          :Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              const Color(0xFF00A8D5),
+              const Color(0xFFFFFFFF),
+            ],),
+          // image: DecorationImage(image: AssetImage('assets/skintones/gradientforfood1.png'),fit: BoxFit.cover)
+        ),
+        child: Column(
+          children: [
+            Expanded(child:SingleChildScrollView(child: buildDataTable(),physics: BouncingScrollPhysics(),scrollDirection: Axis.vertical,)) ,
+            buildSubmit(),
+          ],
+        ),
+      )
     );
   }
 
@@ -97,7 +107,7 @@ class _FoodDataState extends State<FoodData> {
 
   List<DataColumn> getColumns(List<String> columns) => columns
       .map((String column) => DataColumn(
-             label: Text(column),
+             label: Text(column,style: TextStyle(fontSize: 12),),
       )).toList();
 
   List<DataRow> getRows(List<Posts1> foodlist) => 
@@ -110,8 +120,8 @@ class _FoodDataState extends State<FoodData> {
            : selectedfoodlist.remove(food);
       }),
       cells: [
-        DataCell(Container(width:screenWidth*0.15, child: Text(food.item))),
-        DataCell(Container(width: screenWidth*0.15, child: Text(food.quantity))),
+        DataCell(Container(width:screenWidth*0.25, child: Text(food.item,maxLines: 4,style: TextStyle(fontSize: 13),))),
+        DataCell(Container(width: screenWidth*0.15, child: Text(food.quantity,maxLines: 4,))),
         DataCell(Container(width: screenWidth*0.15, child: Text((double.parse(food.vitd)/1.7).toStringAsFixed(2)))),
       ],
     )).toList();

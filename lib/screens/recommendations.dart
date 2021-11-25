@@ -12,7 +12,7 @@ class Recommend extends StatefulWidget {
 
 class _RecommendState extends State<Recommend> {
   List<RecommendItems> postsList = [];
-  final reference = FirebaseDatabase.instance.reference().child("Food Recommendations").child("Moderate");
+  final reference = FirebaseDatabase.instance.reference().child("Food Recommendations").child("Low");
 
   @override
   void initState() {
@@ -156,7 +156,7 @@ class _RecommendState extends State<Recommend> {
                         fontSize: 17.0,
                         fontWeight: FontWeight.bold
                       )),
-                      Text(vitamind,
+                      Text(vitamind+' mcg/100g',
                           style: TextStyle(
                               fontSize: 15.0,
                               color: Colors.grey

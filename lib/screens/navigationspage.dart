@@ -21,13 +21,22 @@ class _NavPagesState extends State<NavPages> {
         title: Text('Home Page'),
       ),
       drawer: MainDrawer(),
-      body: CustomScrollView(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              const Color(0xFF00A8D5),
+              const Color(0xFFFFFFFF),
+
+            ],),),
+      child: CustomScrollView(
         physics: ClampingScrollPhysics(),
         slivers: <Widget>[
           _buildHeader(screenHeight),
           _buildPreventionTips(screenHeight),
           _buildYourOwnTest(screenHeight),
         ],
+      ),
       ),
     );
   }
@@ -132,6 +141,14 @@ class _NavPagesState extends State<NavPages> {
   SliverToBoxAdapter _buildPreventionTips(double screenHeight) {
     return SliverToBoxAdapter(
       child: Container(
+        child: Container(
+        decoration: BoxDecoration(
+        gradient: LinearGradient(
+        colors: [
+        const Color(0xFF00A8D5),
+    const Color(0xFFFFFFFF),
+
+    ],),),
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,7 +188,7 @@ class _NavPagesState extends State<NavPages> {
           ],
         ),
       ),
-    );
+    ));
   }
   SliverToBoxAdapter _buildYourOwnTest(double screenHeight){
     return SliverToBoxAdapter(
